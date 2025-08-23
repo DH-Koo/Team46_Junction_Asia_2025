@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'record_detail_chat_screen.dart';
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
@@ -305,7 +306,6 @@ class _RecordScreenState extends State<RecordScreen> {
   Widget _buildRecordPost(Map<String, dynamic> record) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -319,110 +319,127 @@ class _RecordScreenState extends State<RecordScreen> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 상단: 주제와 날짜
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                record['topic'],
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RecordDetailChatScreen(),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 상단: 주제와 날짜
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      record['topic'],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    Text(
+                      record['date'],
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                  ],
                 ),
-              ),
-              Text(
-                record['date'],
-                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-          // 참여자들
-          Wrap(
-            spacing: 6,
-            children: (record['participants'] as List<String>).map((
-              participant,
-            ) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE8E4FF),
-                  borderRadius: BorderRadius.circular(12),
+                // 참여자들
+                Wrap(
+                  spacing: 6,
+                  children: (record['participants'] as List<String>).map((
+                    participant,
+                  ) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE8E4FF),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        participant,
+                        style: const TextStyle(fontSize: 10, color: Colors.black87),
+                      ),
+                    );
+                  }).toList(),
                 ),
-                child: Text(
-                  participant,
-                  style: const TextStyle(fontSize: 10, color: Colors.black87),
-                ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 12),
+                const SizedBox(height: 12),
 
-          // 통계 정보
-          Row(
-            children: [
-              // 점수 변화
-              Expanded(
-                child: _buildStatItem(
-                  '점수',
-                  '${record['scoreChange'] > 0 ? '+' : ''}${record['scoreChange']}',
-                  record['scoreChange'] > 0 ? Colors.green : Colors.red,
+                // 통계 정보
+                Row(
+                  children: [
+                    // 점수 변화
+                    Expanded(
+                      child: _buildStatItem(
+                        '점수',
+                        '${record['scoreChange'] > 0 ? '+' : ''}${record['scoreChange']}',
+                        record['scoreChange'] > 0 ? Colors.green : Colors.red,
+                      ),
+                    ),
+                    // 문장 수
+                    Expanded(
+                      child: _buildStatItem(
+                        '문장',
+                        '${record['sentenceCount']}개',
+                        Colors.blue,
+                      ),
+                    ),
+                    // 폭탄 수
+                    Expanded(
+                      child: _buildStatItem(
+                        '폭탄',
+                        '${record['bombCount']}개',
+                        Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              // 문장 수
-              Expanded(
-                child: _buildStatItem(
-                  '문장',
-                  '${record['sentenceCount']}개',
-                  Colors.blue,
-                ),
-              ),
-              // 폭탄 수
-              Expanded(
-                child: _buildStatItem(
-                  '폭탄',
-                  '${record['bombCount']}개',
-                  Colors.red,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-          Row(
-            children: [
-              // 회화 정확도
-              Expanded(
-                child: _buildStatItem(
-                  '정확도',
-                  '${record['conversationAccuracy']}%',
-                  Colors.purple,
+                Row(
+                  children: [
+                    // 회화 정확도
+                    Expanded(
+                      child: _buildStatItem(
+                        '정확도',
+                        '${record['conversationAccuracy']}%',
+                        Colors.purple,
+                      ),
+                    ),
+                    // 문법 오류
+                    Expanded(
+                      child: _buildStatItem(
+                        '문법 오류',
+                        '${record['grammarErrors']}개',
+                        Colors.orange,
+                      ),
+                    ),
+                    // 어휘 오류
+                    Expanded(
+                      child: _buildStatItem(
+                        '어휘 오류',
+                        '${record['vocabularyErrors']}개',
+                        Colors.orange,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              // 문법 오류
-              Expanded(
-                child: _buildStatItem(
-                  '문법 오류',
-                  '${record['grammarErrors']}개',
-                  Colors.orange,
-                ),
-              ),
-              // 어휘 오류
-              Expanded(
-                child: _buildStatItem(
-                  '어휘 오류',
-                  '${record['vocabularyErrors']}개',
-                  Colors.orange,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
