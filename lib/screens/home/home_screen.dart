@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showGameSettingsDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return const GameSettingsDialog();
       },
@@ -223,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildTierHexagon(int tier) {
     Color tierColor = _getTierColor(tier);
 
-    return Container(
+    return SizedBox(
       width: 24,
       height: 24,
       child: CustomPaint(

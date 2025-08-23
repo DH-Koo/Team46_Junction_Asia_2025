@@ -88,6 +88,7 @@ class _RecordScreenState extends State<RecordScreen> {
         title: const Text('전적 기록'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
+        surfaceTintColor: Colors.white,
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
