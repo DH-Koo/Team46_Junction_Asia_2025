@@ -213,7 +213,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 ),
                 child: Text(
                   message.text,
-                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                  style: const TextStyle(fontSize: 12, color: Colors.black87),
                 ),
               ),
             ),
@@ -271,7 +271,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                     child: Text(
                       message.text,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 13,
                         color: Colors.black87,
                       ),
                     ),

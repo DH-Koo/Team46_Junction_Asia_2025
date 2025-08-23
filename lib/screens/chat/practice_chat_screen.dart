@@ -173,7 +173,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 ),
                 child: Text(
                   message.text,
-                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                  style: const TextStyle(fontSize: 13, color: Colors.black87),
                 ),
               ),
             ),
@@ -232,7 +232,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                               Text(
                                 message.text,
                                 style: const TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 13,
                                   color: Colors.black87,
                                 ),
                               ),
@@ -246,7 +246,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                                 Text(
                                   message.koreanTranslation!,
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     color: Colors.grey[600],
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -411,7 +411,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
       child: Center(
         child: Text(
           text,
-          style: const TextStyle(fontSize: 14, color: Colors.black87),
+          style: const TextStyle(fontSize: 13, color: Colors.black87),
           textAlign: TextAlign.start,
           maxLines: 3,
           overflow: TextOverflow.ellipsis,

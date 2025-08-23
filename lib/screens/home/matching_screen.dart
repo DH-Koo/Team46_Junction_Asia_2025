@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../chat/rank_chat_screen.dart';
+import '../../services/chat_websocket_service.dart';
 
 class MatchingScreen extends StatefulWidget {
   final Map<String, dynamic> gameSettings;
@@ -16,6 +17,11 @@ class _MatchingScreenState extends State<MatchingScreen>
   int currentPhraseIndex = 0;
   late AnimationController _bubbleController;
   late Animation<double> _bubbleAnimation;
+  
+  // 웹소켓 서비스
+  final ChatWebSocketService _webSocketService = ChatWebSocketService();
+  bool _isMatching = false;
+  String? _matchingError;
 
   // 한국어/영어 더미 데이터
   final List<Map<String, String>> phrases = [
@@ -98,11 +104,15 @@ class _MatchingScreenState extends State<MatchingScreen>
 
     _bubbleController.forward();
     _startPhraseRotation();
+    
+    // 웹소켓으로 매칭 큐에 참가
+    _startMatching();
   }
 
   @override
   void dispose() {
     _bubbleController.dispose();
+    _webSocketService.dispose();
     super.dispose();
   }
 
@@ -128,7 +138,55 @@ class _MatchingScreenState extends State<MatchingScreen>
     _bubbleController.forward();
   }
 
+  // 매칭 시작
+  void _startMatching() async {
+    setState(() {
+      _isMatching = true;
+      _matchingError = null;
+    });
+
+    try {
+      await _webSocketService.joinMatchingQueue(
+        userId: 1, // 실제로는 사용자 ID를 동적으로 가져와야 함
+        partySize: widget.gameSettings['party_size'] ?? 2,
+        onMatched: _onMatched,
+        onError: _onMatchingError,
+      );
+    } catch (e) {
+      setState(() {
+        _matchingError = '매칭 시작 실패: $e';
+        _isMatching = false;
+      });
+    }
+  }
+
+  // 매칭 완료 처리
+  void _onMatched(int chatRoomId) {
+    setState(() {
+      _isMatching = false;
+    });
+    
+    // 매칭 완료 후 채팅 화면으로 이동
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RankChatScreen(),
+      ),
+    );
+  }
+
+  // 매칭 오류 처리
+  void _onMatchingError(String error) {
+    setState(() {
+      _matchingError = error;
+      _isMatching = false;
+    });
+  }
+
   void _cancelMatching() {
+    // 웹소켓 연결 해제
+    _webSocketService.leaveMatchingQueue();
+    _webSocketService.disconnect();
     Navigator.of(context).pop();
   }
 
@@ -279,29 +337,84 @@ class _MatchingScreenState extends State<MatchingScreen>
 
               const Spacer(),
 
-              // 로딩 인디케이터
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFB8A9FF),
+              // 매칭 상태 표시
+              if (_matchingError != null)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.red[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.red[200]!),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.red[400], size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _matchingError!,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.red[700],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else if (_isMatching)
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFFB8A9FF),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 12),
-                  Text(
-                    '매칭 중...',
-                    style: TextStyle(fontSize: 14, color: Colors.black54),
-                  ),
-                ],
-              ),
+                    SizedBox(width: 12),
+                    Text(
+                      '매칭 중...',
+                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                    ),
+                  ],
+                )
+              else
+                const Text(
+                  '매칭 대기 중...',
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                ),
 
               const SizedBox(height: 40),
+
+              // 오류 발생 시 재시도 버튼
+              if (_matchingError != null) ...[
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _startMatching,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFB8A9FF),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      '재시도',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
 
               // 취소 버튼
               SizedBox(
