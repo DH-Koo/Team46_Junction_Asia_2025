@@ -163,27 +163,32 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
       final data = jsonDecode(message);
 
-      if (data['type'] == 'message') {
+      if (data['event'] == 'message') {
         final text = data['text'] as String;
-        final imgIds = data['img_ids'] as List<dynamic>?;
-        final isFromUser = false; // 서버에서 받은 메시지는 항상 상대방 메시지
+        final sender = data['sender'] as int;
+        final images = data['images'] as List<dynamic>?;
+        final imgUrls = data['img_urls'] as List<dynamic>?;
+        final isFromUser = sender == 2; // sender가 1인 경우 유저 메시지로 간주
 
-        final chatMessage = ChatMessage(
-          text: text,
-          isFromUser: isFromUser,
-          senderName: "Student1",
-          imgIds: imgIds?.cast<int>() ?? [],
-        );
+        // 로컬에서 보낸 메시지가 아닌 경우에만 메시지 추가
+        if (!isFromUser) {
+          final chatMessage = ChatMessage(
+            text: text,
+            isFromUser: isFromUser,
+            senderName: "Student1",
+            imgIds: images?.cast<int>() ?? [],
+          );
 
-        _addMessage(chatMessage);
+          _addMessage(chatMessage);
 
-        // 상대방 메시지 수신 시 왼쪽 카드 하이라이트
-        setState(() {
-          _highlightedCharacterIndex = 0; // IBM (왼쪽)
-        });
+          // 상대방 메시지 수신 시 왼쪽 카드 하이라이트
+          setState(() {
+            _highlightedCharacterIndex = 0; // IBM (왼쪽)
+          });
 
-        // 폭탄 인디케이터 시작
-        _resetBombIndicator();
+          // 폭탄 인디케이터 시작
+          _resetBombIndicator();
+        }
       } else if (data['type'] == 'read') {
         // 읽음 확인 처리
         final msgId = data['msg_id'] as int;
@@ -233,7 +238,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
       _channel!.sink.add(jsonEncode(message));
 
-      // 내 메시지 추가
+      // 내 메시지 추가 (로컬에서 즉시 표시)
       final chatMessage = ChatMessage(text: text, isFromUser: true, imgIds: []);
 
       _addMessage(chatMessage);
@@ -471,7 +476,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
                   //   ),
                   //   const SizedBox(height: 2),
                   Text(
-                    "Ordering food at a restaurant.",
+                    "Is it right to tell a white lie?",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[800],
@@ -557,7 +562,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
               Expanded(
                 child: CharacterCard(
                   rank: 3,
-                  name: "IBM",
+                  name: "IBM (Me)",
                   score: "2991",
                   medalColor: Colors.orange[700]!,
                   borderColor: Colors.grey[500]!,
