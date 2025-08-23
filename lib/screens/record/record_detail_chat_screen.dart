@@ -132,22 +132,22 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 horizontal: 16.0,
                 vertical: 12.0,
               ),
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey[100],
-            //     borderRadius: BorderRadius.circular(20),
-            //   ),
+              //   decoration: BoxDecoration(
+              //     color: Colors.grey[100],
+              //     borderRadius: BorderRadius.circular(20),
+              //   ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                //   Text(
-                //     "Restaurant",
-                //     style: TextStyle(
-                //       fontSize: 12,
-                //       color: Colors.grey[600],
-                //       fontWeight: FontWeight.w500,
-                //     ),
-                //   ),
-                //   const SizedBox(height: 2),
+                  //   Text(
+                  //     "Restaurant",
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.grey[600],
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   const SizedBox(height: 2),
                   Text(
                     "Ordering food at a restaurant",
                     style: TextStyle(
@@ -197,19 +197,19 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 decoration: BoxDecoration(
                   color: Color(0xFFE8E4FF),
                   borderRadius: BorderRadius.circular(20),
-                  border: isHighlighted 
-                    ? Border.all(color: Colors.purple[300]!, width: 0.7)
-                    : null,
-                  boxShadow: isHighlighted 
-                    ? [
-                        BoxShadow(
-                          color: Colors.purple.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ]
-                    : null,
+                  border: isHighlighted
+                      ? Border.all(color: Colors.purple[300]!, width: 0.7)
+                      : null,
+                  boxShadow: isHighlighted
+                      ? [
+                          BoxShadow(
+                            color: Colors.purple.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : null,
                 ),
                 child: Text(
                   message.text,
@@ -231,18 +231,13 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  message.senderName ?? "구구",
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w600,
-                  ),
+              decoration: BoxDecoration(shape: BoxShape.circle),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/image/ybm_2d-1.png',
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -300,7 +295,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
             width: 90,
             height: 90,
             child: Image.asset(
-              'assets/image/character.png',
+              'assets/motion/motion6.gif',
               fit: BoxFit.contain,
             ),
           ),
@@ -369,10 +364,10 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
           Expanded(
             child: Container(
               height: 50,
-            //   decoration: BoxDecoration(
-            //     color: canGoPrev ? Color(0xFFE8E4FF) : Colors.grey[300],
-            //     borderRadius: BorderRadius.circular(25),
-            //   ),
+              //   decoration: BoxDecoration(
+              //     color: canGoPrev ? Color(0xFFE8E4FF) : Colors.grey[300],
+              //     borderRadius: BorderRadius.circular(25),
+              //   ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -380,24 +375,24 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                   onTap: canGoPrev ? _prevStep : null,
                   child: const Center(
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Icon(
-                            Icons.arrow_back_ios,
-                            size: 16,
+                          Icons.arrow_back_ios,
+                          size: 16,
+                          color: Colors.black87,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "prev",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                             color: Colors.black87,
                           ),
-                          const SizedBox(width: 12),
-                          Text(
-                            "prev",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                    )
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -408,58 +403,58 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
 
           // 단계 표시
           Text(
-              '${_currentStep + 1} / ${_userMessageIndices.length}',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.purple[700],
-              ),
+            '${_currentStep + 1} / ${_userMessageIndices.length}',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.purple[700],
             ),
-          
+          ),
+
           const SizedBox(width: 16),
 
           // 다음/완료 버튼
           Expanded(
             child: Container(
               height: 50,
-            //   decoration: BoxDecoration(
-            //     color: isLastStep ? Colors.green[100] : Color(0xFFE8E4FF),
-            //     borderRadius: BorderRadius.circular(25),
-            //   ),
+              //   decoration: BoxDecoration(
+              //     color: isLastStep ? Colors.green[100] : Color(0xFFE8E4FF),
+              //     borderRadius: BorderRadius.circular(25),
+              //   ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25),
                   onTap: isLastStep ? _finishChat : _nextStep,
                   child: Center(
-                    child: isLastStep ? 
-                    Text(
-                      "Finish",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.green[700],
-                      ),
-                    ) : 
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "next",
+                    child: isLastStep
+                        ? Text(
+                            "Finish",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              color: Colors.green[700],
                             ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "next",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                                color: Colors.black87,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 12),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Colors.black87,
-                          ),
-                        ],
-                    )
                   ),
                 ),
               ),

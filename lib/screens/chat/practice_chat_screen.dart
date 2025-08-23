@@ -15,7 +15,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
     ChatMessage(
       text: "Are you ready to order?",
       isFromUser: false,
-      senderName: "구구",
+      senderName: "와옹",
       koreanTranslation: "주문 준비되셨나요?",
     ),
     ChatMessage(
@@ -25,7 +25,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
     ChatMessage(
       text: "Sure. Would you like a drink?",
       isFromUser: false,
-      senderName: "구구",
+      senderName: "와옹",
       koreanTranslation: "물론이죠, 음료 필요하세요?",
     ),
   ];
@@ -57,16 +57,23 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.grey.withOpacity(0.1),
-        //     spreadRadius: 1,
-        //     blurRadius: 3,
-        //     offset: const Offset(0, 1),
-        //   ),
+          //   BoxShadow(
+          //     color: Colors.grey.withOpacity(0.1),
+          //     spreadRadius: 1,
+          //     blurRadius: 3,
+          //     offset: const Offset(0, 1),
+          //   ),
         ],
       ),
       child: Row(
         children: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios, size: 16, color: Colors.black87),
+          ),
+          const SizedBox(width: 4),
           // 레스토랑 컨텍스트
           Expanded(
             child: Container(
@@ -74,26 +81,26 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 horizontal: 16.0,
                 vertical: 12.0,
               ),
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey[100],
-            //     borderRadius: BorderRadius.circular(20),
-            //   ),
+              //   decoration: BoxDecoration(
+              //     color: Colors.grey[100],
+              //     borderRadius: BorderRadius.circular(20),
+              //   ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                //   Text(
-                //     "Restaurant",
-                //     style: TextStyle(
-                //       fontSize: 12,
-                //       color: Colors.grey[600],
-                //       fontWeight: FontWeight.w500,
-                //     ),
-                //   ),
-                //   const SizedBox(height: 2),
+                  //   Text(
+                  //     "Restaurant",
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.grey[600],
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   const SizedBox(height: 2),
                   Text(
                     "Ordering food at a restaurant.",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Colors.grey[800],
                       fontWeight: FontWeight.w800,
                     ),
@@ -103,30 +110,30 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
             ),
           ),
 
-          const SizedBox(width: 16),
+          // const SizedBox(width: 16),
 
-          // 시간
-          Column(
-            children: [
-              Text(
-                "Time",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                "2:37",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[800],
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+          // // 시간
+          // Column(
+          //   children: [
+          //     Text(
+          //       "Time",
+          //       style: TextStyle(
+          //         fontSize: 12,
+          //         color: Colors.grey[600],
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          //     ),
+          //     const SizedBox(height: 2),
+          //     Text(
+          //       "2:37",
+          //       style: TextStyle(
+          //         fontSize: 14,
+          //         color: Colors.grey[800],
+          //         fontWeight: FontWeight.w600,
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
@@ -181,23 +188,11 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 아바타
-            Container(
+            Image.asset(
+              'assets/image/character.png',
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  message.senderName ?? "구구",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
+              fit: BoxFit.cover,
             ),
 
             const SizedBox(width: 12),
@@ -205,7 +200,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  message.senderName ?? "구구",
+                  message.senderName ?? "와옹",
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[600],

@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../chat/practice_chat_screen.dart';
 import '../chat/rank_chat_screen.dart';
 
 class MatchingScreen extends StatefulWidget {
@@ -133,13 +132,6 @@ class _MatchingScreenState extends State<MatchingScreen>
     Navigator.of(context).pop();
   }
 
-  void _navigateToPracticeChat() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const PracticeChatScreen()),
-    );
-  }
-
   void _navigateToRankChat() {
     Navigator.pushReplacement(
       context,
@@ -157,50 +149,22 @@ class _MatchingScreenState extends State<MatchingScreen>
           child: Column(
             children: [
               // 개발용 이동 버튼들 (상단에 추가)
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _navigateToPracticeChat,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[400],
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        '[개발용] 연습 채팅',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _navigateToRankChat,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red[400],
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _navigateToRankChat,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[400],
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        '[개발용] 랭크 채팅',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  child: const Text(
+                    '[개발용] 랭크 채팅',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
-                ],
+                ),
               ),
 
               const SizedBox(height: 40),

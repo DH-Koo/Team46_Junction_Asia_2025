@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:team46_junction_asia_2025/screens/chat/practice_chat_screen.dart';
 
 class RecordDetailSummaryScreen extends StatefulWidget {
   const RecordDetailSummaryScreen({super.key});
@@ -25,29 +26,29 @@ class _RecordDetailSummaryScreenState extends State<RecordDetailSummaryScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                    SizedBox(width: 16),
+                  SizedBox(width: 16),
                   // "Cheer up!" 텍스트와 박수 이모지
                   Row(
                     children: [
                       const Text(
-                          'Cheer up!',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                        'Cheer up!',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
-                        const SizedBox(width: 8),
-                        const Text('👏', style: TextStyle(fontSize: 24)),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('👏', style: TextStyle(fontSize: 24)),
                     ],
                   ),
                   SizedBox(width: 16),
                   Image.asset(
-                        'assets/image/character.png',
-                        width: 80,
-                        height: 80,
-                    ),
-                    SizedBox(width: 16),
+                    'assets/motion/motion4.gif',
+                    width: 80,
+                    height: 80,
+                  ),
+                  SizedBox(width: 16),
                   // 캐릭터 이미지
                 ],
               ),
@@ -59,7 +60,7 @@ class _RecordDetailSummaryScreenState extends State<RecordDetailSummaryScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  //color: const Color(0xFFF5F5F5),
+                  color: const Color(0xFFF5F5F5),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: const Color(0xFFE0E0E0)),
                 ),
@@ -254,19 +255,29 @@ class _RecordDetailSummaryScreenState extends State<RecordDetailSummaryScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE8E4FF),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '이 주제로 ai와 대화하기',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PracticeChatScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE8E4FF),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'AI와 연습하기',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ),

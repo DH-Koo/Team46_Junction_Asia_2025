@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/home/home_screen.dart';
+import 'package:team46_junction_asia_2025/screens/home/home_screen.dart';
+import 'screens/auth/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,8 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Team46 App',
-      debugShowCheckedModeBanner: false,
+      title: 'Lang Chat',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.white,
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.black87,
         ),
       ),
-      home: const HomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }
