@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'record_detail_summary_screen.dart';
 
 class RecordDetailChatScreen extends StatefulWidget {
@@ -25,35 +24,18 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
       isFromUser: false,
       senderName: "구구",
     ),
-    ChatMessage(
-      text: "I like watching baseball.",
-      isFromUser: true,
-    ),
-    ChatMessage(
-      text: "Oh, then would you want some coke?",
-      isFromUser: false,
-    ),
-    
-    ChatMessage(
-      text: "Yes, I'd like a coke.",
-      isFromUser: true,
-    ),
-    ChatMessage(
-      text: "I'd like a coke.",
-      isFromUser: false,
-    ),
-    
-    ChatMessage(
-      text: "I'd like a coke.",
-      isFromUser: true,
-    ),
-    
-    
+    ChatMessage(text: "I like watching baseball.", isFromUser: true),
+    ChatMessage(text: "Oh, then would you want some coke?", isFromUser: false),
+
+    ChatMessage(text: "Yes, I'd like a coke.", isFromUser: true),
+    ChatMessage(text: "I'd like a coke.", isFromUser: false),
+
+    ChatMessage(text: "I'd like a coke.", isFromUser: true),
   ];
 
   // 현재 단계 (사용자 대화 인덱스)
   int _currentStep = 0;
-  
+
   // 사용자 대화의 인덱스들을 저장
   late List<int> _userMessageIndices;
 
@@ -61,7 +43,9 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   void initState() {
     super.initState();
     // 사용자 메시지의 인덱스들을 찾아서 저장
-    _userMessageIndices = _messages.asMap().entries
+    _userMessageIndices = _messages
+        .asMap()
+        .entries
         .where((entry) => entry.value.isFromUser)
         .map((entry) => entry.key)
         .toList();
@@ -70,7 +54,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   // 현재 단계까지의 메시지만 표시
   List<ChatMessage> get _visibleMessages {
     if (_userMessageIndices.isEmpty) return _messages;
-    
+
     int endIndex = _userMessageIndices[_currentStep];
     return _messages.take(endIndex + 1).toList();
   }
@@ -95,7 +79,8 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
 
   // 현재 단계의 사용자 메시지 인덱스
   int? get _currentUserMessageIndex {
-    if (_userMessageIndices.isEmpty || _currentStep >= _userMessageIndices.length) {
+    if (_userMessageIndices.isEmpty ||
+        _currentStep >= _userMessageIndices.length) {
       return null;
     }
     return _userMessageIndices[_currentStep];
@@ -110,15 +95,13 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
           children: [
             // 상단 헤더
             _buildHeader(),
-            
+
             // 채팅 메시지 영역
-            Expanded(
-              child: _buildChatMessages(),
-            ),
-            
+            Expanded(child: _buildChatMessages()),
+
             // 피드백 섹션
             _buildFeedbackSection(),
-            
+
             // 이전/다음 버튼
             _buildNavigationButtons(),
           ],
@@ -130,45 +113,54 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(16.0),
-    //   decoration: BoxDecoration(
-    //     color: Colors.white,
-    //     boxShadow: [
-    //       BoxShadow(
-    //         color: Colors.grey.withOpacity(0.1),
-    //         spreadRadius: 1,
-    //         blurRadius: 3,
-    //         offset: const Offset(0, 1),
-    //       ),
-    //     ],
-    //   ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Restaurant",
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
+      child: Row(
+        children: [
+          // 뒤로가기 버튼
+          IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.arrow_back_ios),
+            style: IconButton.styleFrom(
+              foregroundColor: Colors.grey[700],
+              padding: const EdgeInsets.all(8),
+            ),
+          ),
+          const SizedBox(width: 12),
+          // 주제 박스
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Restaurant",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    "Ordering food at a restaurant.",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[800],
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 2),
-            Text(
-              "Ordering food at a restaurant.",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[800],
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -198,7 +190,10 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
                 decoration: BoxDecoration(
                   color: Color(0xFFE8E4FF),
                   borderRadius: BorderRadius.circular(20),
@@ -218,10 +213,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 ),
                 child: Text(
                   message.text,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                  ),
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
               ),
             ),
@@ -254,7 +246,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 ),
               ),
             ),
-            
+
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +265,10 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                     maxWidth: MediaQuery.of(context).size.width * 0.7,
                   ),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(20),
@@ -301,8 +296,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-        
-        SizedBox(
+          SizedBox(
             width: 90,
             height: 90,
             child: Image.asset(
@@ -366,7 +360,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   Widget _buildNavigationButtons() {
     final canGoPrev = _currentStep > 0;
     final isLastStep = _currentStep == _userMessageIndices.length - 1;
-    
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -409,9 +403,9 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
               ),
             ),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // 단계 표시
           Text(
               '${_currentStep + 1} / ${_userMessageIndices.length}',
@@ -423,7 +417,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
             ),
           
           const SizedBox(width: 16),
-          
+
           // 다음/완료 버튼
           Expanded(
             child: Container(
@@ -497,11 +491,7 @@ class ChatMessage {
   final bool isFromUser;
   final String? senderName;
 
-  ChatMessage({
-    required this.text,
-    required this.isFromUser,
-    this.senderName,
-  });
+  ChatMessage({required this.text, required this.isFromUser, this.senderName});
 }
 
 class SpeechBubbleTailPainter extends CustomPainter {
@@ -510,21 +500,21 @@ class SpeechBubbleTailPainter extends CustomPainter {
     final paint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
-    
+
     final path = Path();
     path.moveTo(0, 0);
     path.lineTo(size.width, size.height / 2);
     path.lineTo(0, size.height);
     path.close();
-    
+
     canvas.drawPath(path, paint);
-    
+
     // 테두리
     final borderPaint = Paint()
       ..color = Colors.grey[300]!
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
-    
+
     canvas.drawPath(path, borderPaint);
   }
 
