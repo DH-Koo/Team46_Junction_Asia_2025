@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ReportLoadingScreen extends StatelessWidget {
-  const ReportLoadingScreen({super.key, required this.roomId, required this.userId});
+  const ReportLoadingScreen({
+    super.key,
+    required this.roomId,
+    required this.userId,
+  });
   final int roomId;
   final int userId;
 
