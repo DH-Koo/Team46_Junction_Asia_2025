@@ -9,7 +9,7 @@ import '../../services/api_config.dart';
 class RankChatScreenBeta extends StatefulWidget {
   final int roomId;
   final int userId;
-  
+
   const RankChatScreenBeta({
     super.key,
     required this.roomId,
@@ -20,27 +20,28 @@ class RankChatScreenBeta extends StatefulWidget {
   State<RankChatScreenBeta> createState() => _RankChatScreenBetaState();
 }
 
-class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProviderStateMixin {
+class _RankChatScreenBetaState extends State<RankChatScreenBeta>
+    with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
   final List<ChatMessage> _messages = [];
-  
+
   // 웹소켓 관련 변수들
   WebSocketChannel? _channel;
   bool _isConnected = false;
-  
+
   // 메시지 애니메이션 관련 변수들
   List<AnimationController> _messageControllers = [];
   List<Animation<double>> _messageAnimations = [];
-  
+
   // 폭탄 인디케이터 관련 변수들
   double _bombProgress = 1.0; // 진행 바 값 (1.0 = 100%, 0.0 = 0%)
   Timer? _bombTimer;
   bool _isBombActive = false;
-  
+
   // 캐릭터 하이라이트 관련 변수들
   int _highlightedCharacterIndex = -1; // 하이라이트된 캐릭터 인덱스 (-1 = 없음)
   bool _isBombExploded = false; // 폭탄이 터졌는지 상태
-  
+
   // 게임 재시작 시 타이머 상태 저장
   int _savedRemainingSeconds = 180; // 저장된 남은 시간
 
@@ -49,11 +50,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
   bool _isGameStarted = false;
   int _countdownNumber = 3;
   String _countdownText = "3";
-  
+
   // 타이머 관련 변수들
   Timer? _timer;
   int _remainingSeconds = 180; // 3분 = 180초
-  
+
   // 애니메이션 컨트롤러
   late AnimationController _countdownController;
   late Animation<double> _countdownAnimation;
@@ -62,29 +63,21 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
   @override
   void initState() {
     super.initState();
-    
+
     // 애니메이션 컨트롤러 초기화
     _countdownController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    
-    _countdownAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _countdownController,
-      curve: Curves.elasticOut,
-    ));
-    
-    _fadeAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _countdownController,
-      curve: Curves.easeInOut,
-    ));
-    
+
+    _countdownAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _countdownController, curve: Curves.elasticOut),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(parent: _countdownController, curve: Curves.easeInOut),
+    );
+
     // 카운트다운 시작
     _startCountdown();
   }
@@ -96,32 +89,32 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
         _countdownNumber = i;
         _countdownText = i.toString();
       });
-      
+
       _countdownController.reset();
       _countdownController.forward();
-      
+
       await Future.delayed(const Duration(seconds: 1));
     }
-    
+
     // START! 표시
     setState(() {
       _countdownText = "START!";
     });
-    
+
     _countdownController.reset();
     _countdownController.forward();
-    
+
     await Future.delayed(const Duration(seconds: 1));
-    
+
     // 카운트다운 완료, 게임 시작
     setState(() {
       _isCountdownActive = false;
       _isGameStarted = true;
     });
-    
+
     // 타이머 시작
     _startTimer();
-    
+
     // 웹소켓 연결
     _connectWebSocket();
   }
@@ -129,11 +122,13 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
   // 웹소켓 연결
   void _connectWebSocket() {
     try {
-      final uri = Uri.parse('ws://${ApiConfig.host}/ws/chat/${widget.roomId}/${widget.userId}/');
+      final uri = Uri.parse(
+        'ws://${ApiConfig.host}/ws/chat/${widget.roomId}/${widget.userId}/',
+      );
       print('웹소켓 연결 시도: $uri');
-      
+
       _channel = WebSocketChannel.connect(uri);
-      
+
       _channel!.stream.listen(
         (message) {
           _handleWebSocketMessage(message);
@@ -149,11 +144,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
           });
         },
       );
-      
+
       setState(() {
         _isConnected = true;
       });
-      
+
       print('웹소켓 연결 성공');
     } catch (e) {
       print('웹소켓 연결 실패: $e');
@@ -165,31 +160,30 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
   void _handleWebSocketMessage(dynamic message) {
     try {
       print('수신된 메시지: $message');
-      
+
       final data = jsonDecode(message);
-      
+
       if (data['type'] == 'message') {
         final text = data['text'] as String;
         final imgIds = data['img_ids'] as List<dynamic>?;
         final isFromUser = false; // 서버에서 받은 메시지는 항상 상대방 메시지
-        
+
         final chatMessage = ChatMessage(
           text: text,
           isFromUser: isFromUser,
           senderName: "Student1",
           imgIds: imgIds?.cast<int>() ?? [],
         );
-        
+
         _addMessage(chatMessage);
-        
+
         // 상대방 메시지 수신 시 왼쪽 카드 하이라이트
         setState(() {
           _highlightedCharacterIndex = 0; // IBM (왼쪽)
         });
-        
+
         // 폭탄 인디케이터 시작
         _resetBombIndicator();
-        
       } else if (data['type'] == 'read') {
         // 읽음 확인 처리
         final msgId = data['msg_id'] as int;
@@ -205,24 +199,21 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
     setState(() {
       _messages.add(message);
     });
-    
+
     // 메시지 애니메이션 컨트롤러 추가
     final controller = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     final animation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: controller,
-      curve: Curves.easeOutBack,
-    ));
-    
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutBack));
+
     _messageControllers.add(controller);
     _messageAnimations.add(animation);
-    
+
     // 애니메이션 시작
     controller.forward();
   }
@@ -231,37 +222,32 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
   void _sendMessage() {
     final text = _messageController.text.trim();
     if (text.isEmpty || !_isConnected) return;
-    
+
     try {
       final message = {
-        'event': 'message',
+        'type': 'message',
         'text': text,
         'room_id': widget.roomId,
         'user_id': widget.userId,
       };
-      
+
       _channel!.sink.add(jsonEncode(message));
-      
+
       // 내 메시지 추가
-      final chatMessage = ChatMessage(
-        text: text,
-        isFromUser: true,
-        imgIds: [],
-      );
-      
+      final chatMessage = ChatMessage(text: text, isFromUser: true, imgIds: []);
+
       _addMessage(chatMessage);
-      
+
       // 내 메시지 전송 시 오른쪽 카드 하이라이트
       setState(() {
         _highlightedCharacterIndex = 1; // Student1 (오른쪽)
       });
-      
+
       // 입력 필드 초기화
       _messageController.clear();
-      
+
       // 폭탄 인디케이터 시작
       _resetBombIndicator();
-      
     } catch (e) {
       print('메시지 전송 오류: $e');
       _showErrorSnackBar('메시지 전송 실패: $e');
@@ -271,7 +257,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
   // 읽음 확인 전송
   void _sendReadConfirmation(int msgId) {
     if (!_isConnected) return;
-    
+
     try {
       final readMessage = {
         'event': 'read',
@@ -279,7 +265,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
         'user_id': widget.userId,
         'read_count': _messages.length,
       };
-      
+
       _channel!.sink.add(jsonEncode(readMessage));
     } catch (e) {
       print('읽음 확인 전송 오류: $e');
@@ -289,24 +275,21 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
   // 에러 스낵바 표시
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
-  
+
   void _resetBombIndicator() {
     // 기존 타이머 취소
     _bombTimer?.cancel();
-    
+
     // 폭탄 터짐 상태 초기화
     setState(() {
       _bombProgress = 1.0;
       _isBombActive = true;
       _isBombExploded = false;
     });
-    
+
     // 진행 바가 점점 줄어들도록 타이머 시작
     _bombTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
       setState(() {
@@ -317,7 +300,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
           _isBombActive = false;
           _isBombExploded = true; // 폭탄이 터짐
           timer.cancel();
-          
+
           // motion5.gif가 한번 진행된 후 게임 재시작
           Future.delayed(const Duration(milliseconds: 5500), () {
             _restartGame();
@@ -326,15 +309,15 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
       });
     });
   }
-  
+
   void _restartGame() {
     // 기존 타이머들 취소
     _timer?.cancel();
     _bombTimer?.cancel();
-    
+
     // 웹소켓 연결 해제
     _disconnectWebSocket();
-    
+
     // 상태 초기화
     setState(() {
       _isGameStarted = false;
@@ -348,14 +331,14 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
       _bombProgress = 1.0;
       _isBombActive = false;
     });
-    
+
     // 메시지 애니메이션 컨트롤러들 리셋
     for (var controller in _messageControllers) {
       controller.dispose();
     }
     _messageControllers.clear();
     _messageAnimations.clear();
-    
+
     // 카운트다운 다시 시작
     _startCountdown();
   }
@@ -404,21 +387,19 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
               children: [
                 // 상단 헤더
                 _buildHeader(),
-                
+
                 // 캐릭터 이미지들
                 _buildCharacterRow(),
-                
+
                 // 채팅 메시지 영역
-                Expanded(
-                  child: _buildChatMessages(),
-                ),
-                
+                Expanded(child: _buildChatMessages()),
+
                 // 추천 응답 및 입력 영역
                 _buildBottomSection(),
               ],
             ),
           ),
-          
+
           // 카운트다운 오버레이
           if (_isCountdownActive)
             Container(
@@ -456,12 +437,12 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.grey.withOpacity(0.1),
-        //     spreadRadius: 1,
-        //     blurRadius: 3,
-        //     offset: const Offset(0, 1),
-        //   ),
+          //   BoxShadow(
+          //     color: Colors.grey.withOpacity(0.1),
+          //     spreadRadius: 1,
+          //     blurRadius: 3,
+          //     offset: const Offset(0, 1),
+          //   ),
         ],
       ),
       child: Row(
@@ -469,23 +450,26 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
           // 레스토랑 컨텍스트
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey[100],
-            //     borderRadius: BorderRadius.circular(20),
-            //   ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
+              //   decoration: BoxDecoration(
+              //     color: Colors.grey[100],
+              //     borderRadius: BorderRadius.circular(20),
+              //   ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                //   Text(
-                //     "Restaurant",
-                //     style: TextStyle(
-                //       fontSize: 12,
-                //       color: Colors.grey[600],
-                //       fontWeight: FontWeight.w500,
-                //     ),
-                //   ),
-                //   const SizedBox(height: 2),
+                  //   Text(
+                  //     "Restaurant",
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.grey[600],
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   const SizedBox(height: 2),
                   Text(
                     "Ordering food at a restaurant.",
                     style: TextStyle(
@@ -498,9 +482,9 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
               ),
             ),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // 시간
           Column(
             children: [
@@ -536,16 +520,10 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
           // 폭탄 아이콘과 진행바
           Row(
             children: [
-                const Icon(
-                  Symbols.bomb,
-                  color: Colors.black,
-                  size: 30,
-                  fill: 1,
-                ),
-              
-              
+              const Icon(Symbols.bomb, color: Colors.black, size: 30, fill: 1),
+
               const SizedBox(width: 8),
-              
+
               // 진행바
               Expanded(
                 child: Container(
@@ -559,7 +537,9 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
                     widthFactor: _bombProgress.clamp(0.0, 1.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: _isBombActive ? Colors.red[400]! : Colors.green[300]!,
+                        color: _isBombActive
+                            ? Colors.red[400]!
+                            : Colors.green[300]!,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -568,9 +548,9 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 캐릭터 카드들
           Row(
             children: [
@@ -583,12 +563,13 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
                   borderColor: Colors.grey[500]!,
                   borderWidth: 1,
                   isHighlighted: _highlightedCharacterIndex == 0,
-                  isBombExploded: _isBombExploded && _highlightedCharacterIndex == 0,
+                  isBombExploded:
+                      _isBombExploded && _highlightedCharacterIndex == 0,
                 ),
               ),
-              
+
               const SizedBox(width: 12),
-              
+
               Expanded(
                 child: CharacterCard(
                   rank: 2,
@@ -598,24 +579,25 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
                   borderColor: Colors.grey[500]!,
                   borderWidth: 1,
                   isHighlighted: _highlightedCharacterIndex == 1,
-                  isBombExploded: _isBombExploded && _highlightedCharacterIndex == 1,
+                  isBombExploded:
+                      _isBombExploded && _highlightedCharacterIndex == 1,
                 ),
               ),
-              
-            //   const SizedBox(width: 12),
-              
-            //   Expanded(
-            //     child: CharacterCard(
-            //       rank: 1,
-            //       name: "Student2",
-            //       score: "3321",
-            //       medalColor: Colors.yellow[700]!,
-            //       borderColor: Colors.grey[500]!,
-            //       borderWidth: 1,
-            //       isHighlighted: _highlightedCharacterIndex == 2,
-            //       isBombExploded: _isBombExploded && _highlightedCharacterIndex == 2,
-            //     ),
-            //   ),
+
+              //   const SizedBox(width: 12),
+
+              //   Expanded(
+              //     child: CharacterCard(
+              //       rank: 1,
+              //       name: "Student2",
+              //       score: "3321",
+              //       medalColor: Colors.yellow[700]!,
+              //       borderColor: Colors.grey[500]!,
+              //       borderWidth: 1,
+              //       isHighlighted: _highlightedCharacterIndex == 2,
+              //       isBombExploded: _isBombExploded && _highlightedCharacterIndex == 2,
+              //     ),
+              //   ),
             ],
           ),
         ],
@@ -630,11 +612,12 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
       itemBuilder: (context, index) {
         final message = _messages[index];
         final animationIndex = index < _messageAnimations.length ? index : 0;
-        
+
         return AnimatedBuilder(
           animation: _messageAnimations[animationIndex],
           builder: (context, child) {
-            final animationValue = _messageAnimations[animationIndex].value.clamp(0.0, 1.0);
+            final animationValue = _messageAnimations[animationIndex].value
+                .clamp(0.0, 1.0);
             return Transform.scale(
               scale: animationValue,
               child: Opacity(
@@ -661,17 +644,17 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
                 decoration: BoxDecoration(
                   color: Color(0xFFE8E4FF),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   message.text,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.black87,
-                  ),
+                  style: const TextStyle(fontSize: 13, color: Colors.black87),
                 ),
               ),
             ),
@@ -685,12 +668,8 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              'assets/image/ybm_2d-1.png',
-              width: 40,
-              height: 40,
-            ),
-            
+            Image.asset('assets/image/ybm_2d-1.png', width: 40, height: 40),
+
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -709,7 +688,10 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
                     maxWidth: MediaQuery.of(context).size.width * 0.7,
                   ),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(20),
@@ -760,26 +742,19 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta> with TickerProv
                 decoration: const InputDecoration(
                   hintText: "Type a message",
                   border: InputBorder.none,
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                  ),
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
                 ),
                 onSubmitted: (_) => _sendMessage(),
               ),
             ),
           ),
-          
+
           const SizedBox(width: 12),
-          
+
           // 전송 버튼
           GestureDetector(
             onTap: _sendMessage,
-            child: const Icon(
-              Icons.send,
-              color: Colors.black,
-              size: 30,
-            ),
+            child: const Icon(Icons.send, color: Colors.black, size: 30),
           ),
         ],
       ),
@@ -844,17 +819,19 @@ class CharacterCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isHighlighted ? Colors.orange : borderColor, 
-          width: isHighlighted ? 3.0 : borderWidth
+          color: isHighlighted ? Colors.orange : borderColor,
+          width: isHighlighted ? 3.0 : borderWidth,
         ),
-        boxShadow: isHighlighted ? [
-          BoxShadow(
-            color: Colors.orange.withOpacity(0.6),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ] : null,
+        boxShadow: isHighlighted
+            ? [
+                BoxShadow(
+                  color: Colors.orange.withOpacity(0.6),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
       ),
       child: Column(
         children: [
@@ -863,23 +840,17 @@ class CharacterCard extends StatelessWidget {
             width: 60,
             height: 60,
             child: isBombExploded && isHighlighted
-              ? Image.asset(
-                  'assets/motion/motion5.gif',
-                  fit: BoxFit.contain,
-                )
-              : isHighlighted 
-                ? Image.asset(
-                    'assets/motion/motion3.gif',
-                    fit: BoxFit.contain,
-                  )
+                ? Image.asset('assets/motion/motion5.gif', fit: BoxFit.contain)
+                : isHighlighted
+                ? Image.asset('assets/motion/motion3.gif', fit: BoxFit.contain)
                 : Image.asset(
                     'assets/image/character.png',
                     fit: BoxFit.contain,
                   ),
           ),
-          
+
           const SizedBox(height: 8),
-          
+
           // 이름
           Text(
             name,
@@ -889,16 +860,16 @@ class CharacterCard extends StatelessWidget {
               fontWeight: FontWeight.w800,
             ),
           ),
-          
-        //   // 점수
-        //   Text(
-        //     score,
-        //     style: TextStyle(
-        //       fontSize: 18,
-        //       color: isHighlighted ? Colors.orange[700] : Colors.black,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
+
+          //   // 점수
+          //   Text(
+          //     score,
+          //     style: TextStyle(
+          //       fontSize: 18,
+          //       color: isHighlighted ? Colors.orange[700] : Colors.black,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //   ),
         ],
       ),
     );

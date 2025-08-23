@@ -24,7 +24,7 @@ class _MatchingScreenState extends State<MatchingScreen>
   String? _matchingError;
 
   // 사용자 ID (실제로는 인증 서비스에서 가져와야 함)
-  final int _userId = 1;
+  final int _userId = 2;
 
   // 한국어/영어 더미 데이터
   final List<Map<String, String>> phrases = [
