@@ -15,49 +15,35 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Team46 App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.white,
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black87,
+        ),
       ),
-      home: const MainScreen(),
+      home: const HomeScreen(),
     );
   }
 }
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+// class MainScreen extends StatefulWidget {
+//   const MainScreen({super.key});
 
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
+//   @override
+//   State<MainScreen> createState() => _MainScreenState();
+// }
 
-class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+// class _MainScreenState extends State<MainScreen> {
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const RecordScreen(),
-    const ProfileScreen(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: '기록'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '프로필'),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: const HomeScreen(),
+//     );
+//   }
+// }
