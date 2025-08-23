@@ -196,8 +196,8 @@ class _RecordScreenState extends State<RecordScreen> {
     Color tierColor = _getTierColor(tier);
 
     return SizedBox(
-      width: 20,
-      height: 20,
+      width: 24,
+      height: 24,
       child: CustomPaint(
         painter: HexagonPainter(tierColor),
         child: Center(
@@ -467,113 +467,120 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Widget _buildStatsBars(Map<String, dynamic> record) {
-    final statsData = [
-      {
-        'label': '정확도',
-        'value': record['sentenceCount'],
-        'maxValue': 20,
-        'color': const Color(0xFF6366F1),
-        'accuracy': record['conversationAccuracy'],
-      },
-      {
-        'label': '터진 폭탄',
-        'value': record['bombCount'],
-        'maxValue': 5,
-        'color': Colors.red[400],
-      },
-      {
-        'label': '문법 오류',
-        'value': record['grammarErrors'],
-        'maxValue': 5,
-        'color': Colors.orange[400],
-      },
-      {
-        'label': '어휘 오류',
-        'value': record['vocabularyErrors'],
-        'maxValue': 5,
-        'color': Colors.orange[600],
-      },
-    ];
-
     return Column(
-      children: statsData.map((data) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // 상단 행 (총 문장, 정확도)
+        Row(
+          children: [
+            // 총 문장
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    data['label'] as String,
+                    '총 문장',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
                       color: Colors.black87,
                     ),
                   ),
-                  Row(
-                    children: [
-                      if (data['accuracy'] != null) ...[
-                        // 정확도 항목의 경우 (문장 개수) 퍼센트 순서로 표시
-                        Text(
-                          '(총 문장 ${data['value']}개)',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${(data['accuracy'] as double).toStringAsFixed(1)}%',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ] else ...[
-                        // 다른 항목들은 기존 방식
-                        Text(
-                          '${data['value']}개',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ],
+                  const SizedBox(height: 2),
+                  Text(
+                    '${record['sentenceCount']}개',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(3),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: data['accuracy'] != null
-                      ? (data['accuracy'] as double) /
-                            100 // 정확도는 퍼센트 기준
-                      : (data['value'] as int) / (data['maxValue'] as int),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: data['color'] as Color,
-                      borderRadius: BorderRadius.circular(3),
+            ),
+            // 정확도
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '정확도',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
                     ),
                   ),
-                ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${record['conversationAccuracy'].toStringAsFixed(1)}%',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      }).toList(),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        // 하단 행 (터진 폭탄, 문법 및 어휘 오류)
+        Row(
+          children: [
+            // 터진 폭탄
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '터진 폭탄',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${record['bombCount']}개',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 문법 및 어휘 오류
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '문법 및 어휘 오류',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${record['grammarErrors'] + record['vocabularyErrors']}개',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

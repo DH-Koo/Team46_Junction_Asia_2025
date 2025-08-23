@@ -1,8 +1,6 @@
 import 'dart:math';
-import 'dart:async';
 import 'package:flutter/material.dart';
-import '../chat/practice_chat_screen.dart';
-import '../chat/rank_chat_screen.dart';
+import 'matching_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,64 +13,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedTopicIndex = 0;
   final List<String> topics = ['자유', '재미', '학습'];
   int currentTier = 1; // 현재 티어 (1-4)
-  int currentPhraseIndex = 0; // 현재 문구 인덱스
-
-  // 게임 상태 관리
-  bool isGameStarting = false;
-  int countdown = 3;
-  Timer? countdownTimer;
-
-  // 더미 문구 데이터
-  final List<Map<String, String>> phrases = [
-    {
-      'korean': '난 보통 공원에서 강아지들을 산책시켜.',
-      'english': 'I usually walk my dogs at the park',
-    },
-    {
-      'korean': '오늘 새로운 언어를 배우고 있어.',
-      'english': 'I am learning a new language today',
-    },
-    {
-      'korean': '친구들과 함께 영화를 보러 갈 예정이야.',
-      'english': 'I plan to go watch a movie with friends',
-    },
-    {
-      'korean': '매일 아침 요가를 하며 하루를 시작해.',
-      'english': 'I start my day with yoga every morning',
-    },
-    {
-      'korean': '주말엔 항상 새로운 요리에 도전해봐.',
-      'english': 'I always try new recipes on weekends',
-    },
-    {
-      'korean': '책을 읽으며 커피 한 잔 마시는 걸 좋아해.',
-      'english': 'I love reading books while having coffee',
-    },
-    {
-      'korean': '자전거를 타고 도시를 둘러보는 중이야.',
-      'english': 'I am exploring the city by bicycle',
-    },
-    {
-      'korean': '음악을 들으며 그림을 그리고 있어.',
-      'english': 'I am drawing while listening to music',
-    },
-  ];
-
-  void _changePhrase() {
-    setState(() {
-      int newIndex;
-      do {
-        newIndex = Random().nextInt(phrases.length);
-      } while (newIndex == currentPhraseIndex && phrases.length > 1);
-      currentPhraseIndex = newIndex;
-    });
-  }
-
-  @override
-  void dispose() {
-    countdownTimer?.cancel();
-    super.dispose();
-  }
 
   void _showGameSettingsDialog() {
     showDialog(
@@ -89,55 +29,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _startGame(Map<String, dynamic> settings) {
-    setState(() {
-      isGameStarting = true;
-      countdown = 3;
-    });
-
-    countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        countdown--;
-      });
-
-      if (countdown <= 0) {
-        timer.cancel();
-        _navigateToGame(settings);
-      }
-    });
+    // 바로 매칭 화면으로 이동
+    _navigateToGame(settings);
   }
 
   void _navigateToGame(Map<String, dynamic> settings) {
-    final gameMode = settings['mode'];
-
-    if (gameMode == 'practice') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const PracticeChatScreen()),
-      ).then((_) {
-        setState(() {
-          isGameStarting = false;
-          countdown = 3;
-        });
-      });
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const RankChatScreen()),
-      ).then((_) {
-        setState(() {
-          isGameStarting = false;
-          countdown = 3;
-        });
-      });
-    }
-  }
-
-  void _cancelGame() {
-    countdownTimer?.cancel();
-    setState(() {
-      isGameStarting = false;
-      countdown = 3;
-    });
+    // 매칭 화면으로 이동
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MatchingScreen(gameSettings: settings),
+      ),
+    );
   }
 
   @override
@@ -214,42 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const Spacer(),
 
-              // 말풍선
-              GestureDetector(
-                onTap: _changePhrase,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE8E4FF),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        phrases[currentPhraseIndex]['korean']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        phrases[currentPhraseIndex]['english']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
               // 캐릭터 이미지
               SizedBox(
                 width: 180,
@@ -262,49 +129,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const Spacer(),
 
-              // 하단 Play/Cancel 버튼
+              // 하단 Play 버튼
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: GestureDetector(
-                  onTap: isGameStarting ? _cancelGame : _showGameSettingsDialog,
-                  child: isGameStarting
-                      ? Container(
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.red[400],
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Cancel',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Text(
-                                  '$countdown',
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : SizedBox(
-                          height: 80,
-                          child: Image.asset(
-                            'assets/image/play_button.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                  onTap: _showGameSettingsDialog,
+                  child: SizedBox(
+                    height: 80,
+                    child: Image.asset(
+                      'assets/image/play_button.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
               ),
 
@@ -320,8 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Color tierColor = _getTierColor(tier);
 
     return Container(
-      width: 28,
-      height: 28,
+      width: 24,
+      height: 24,
       child: CustomPaint(
         painter: HexagonPainter(tierColor),
         child: Center(
