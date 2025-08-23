@@ -363,77 +363,35 @@ class _RecordScreenState extends State<RecordScreen> {
                     participant,
                   ) {
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFE8E4FF),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         participant,
-                        style: const TextStyle(fontSize: 10, color: Colors.black87),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Colors.black87,
+                        ),
                       ),
                     );
                   }).toList(),
                 ),
                 const SizedBox(height: 12),
 
-                // 통계 정보
+                // 통계 정보 - 새로운 레이아웃
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 점수 변화
-                    Expanded(
-                      child: _buildStatItem(
-                        '점수',
-                        '${record['scoreChange'] > 0 ? '+' : ''}${record['scoreChange']}',
-                        record['scoreChange'] > 0 ? Colors.green : Colors.red,
-                      ),
-                    ),
-                    // 문장 수
-                    Expanded(
-                      child: _buildStatItem(
-                        '문장',
-                        '${record['sentenceCount']}개',
-                        Colors.blue,
-                      ),
-                    ),
-                    // 폭탄 수
-                    Expanded(
-                      child: _buildStatItem(
-                        '폭탄',
-                        '${record['bombCount']}개',
-                        Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-
-                Row(
-                  children: [
-                    // 회화 정확도
-                    Expanded(
-                      child: _buildStatItem(
-                        '정확도',
-                        '${record['conversationAccuracy']}%',
-                        Colors.purple,
-                      ),
-                    ),
-                    // 문법 오류
-                    Expanded(
-                      child: _buildStatItem(
-                        '문법 오류',
-                        '${record['grammarErrors']}개',
-                        Colors.orange,
-                      ),
-                    ),
-                    // 어휘 오류
-                    Expanded(
-                      child: _buildStatItem(
-                        '어휘 오류',
-                        '${record['vocabularyErrors']}개',
-                        Colors.orange,
-                      ),
-                    ),
+                    // 왼쪽: 티어, 점수, 점수 변화
+                    Expanded(flex: 1, child: _buildScoreSection(record)),
+                    const SizedBox(width: 16),
+                    // 오른쪽: 막대 그래프들
+                    Expanded(flex: 2, child: _buildStatsBars(record)),
                   ],
                 ),
               ],
@@ -444,21 +402,152 @@ class _RecordScreenState extends State<RecordScreen> {
     );
   }
 
-  Widget _buildStatItem(String label, String value, Color color) {
+  Widget _buildScoreSection(Map<String, dynamic> record) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(label, style: TextStyle(fontSize: 10, color: Colors.grey[600])),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: color,
+        // 티어와 점수
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildTierHexagon(1), // 임시로 1티어
+            const SizedBox(width: 8),
+            const Text(
+              '360',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        // 점수 변화
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: record['scoreChange'] > 0
+                ? Colors.green.withOpacity(0.1)
+                : Colors.red.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: record['scoreChange'] > 0 ? Colors.green : Colors.red,
+              width: 1,
+            ),
+          ),
+          child: Text(
+            '${record['scoreChange'] > 0 ? '+' : ''}${record['scoreChange']}',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: record['scoreChange'] > 0 ? Colors.green : Colors.red,
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildStatsBars(Map<String, dynamic> record) {
+    final statsData = [
+      {
+        'label': '문장 개수',
+        'value': record['sentenceCount'],
+        'maxValue': 20,
+        'color': const Color(0xFF6366F1),
+        'suffix': '개',
+        'accuracy': record['conversationAccuracy'],
+      },
+      {
+        'label': '터진 폭탄',
+        'value': record['bombCount'],
+        'maxValue': 5,
+        'color': Colors.red[400],
+        'suffix': '개',
+      },
+      {
+        'label': '문법 오류',
+        'value': record['grammarErrors'],
+        'maxValue': 5,
+        'color': Colors.orange[400],
+        'suffix': '개',
+      },
+      {
+        'label': '어휘 오류',
+        'value': record['vocabularyErrors'],
+        'maxValue': 5,
+        'color': Colors.orange[600],
+        'suffix': '개',
+      },
+    ];
+
+    return Column(
+      children: statsData.map((data) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    data['label'] as String,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '${data['value']}${data['suffix']}',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      if (data['accuracy'] != null) ...[
+                        const SizedBox(width: 4),
+                        Text(
+                          '(${(data['accuracy'] as double).toStringAsFixed(1)}%)',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor:
+                      (data['value'] as int) / (data['maxValue'] as int),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: data['color'] as Color,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 }

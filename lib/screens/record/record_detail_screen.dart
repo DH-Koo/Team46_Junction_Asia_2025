@@ -5,11 +5,8 @@ import 'record_detail_chat_screen.dart';
 
 class RecordDetailScreen extends StatefulWidget {
   final RecordItem record;
-  
-  const RecordDetailScreen({
-    super.key,
-    required this.record,
-  });
+
+  const RecordDetailScreen({super.key, required this.record});
 
   @override
   State<RecordDetailScreen> createState() => _RecordDetailScreenState();
@@ -40,18 +37,18 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
           children: [
             // 상단 헤더
             _buildHeader(),
-            
+
             // 탭바
             _buildTabBar(),
-            
+
             // 탭 내용
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
                   // 요약 탭
-                  RecordDetailSummaryScreen(record: widget.record),
-                  
+                  // RecordDetailSummaryScreen(record: widget.record),
+
                   // 채팅 탭
                   RecordDetailChatScreen(),
                 ],
@@ -84,10 +81,7 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
             children: [
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  MaterialSymbols.arrow_back,
-                  color: Colors.grey[600],
-                ),
+                icon: Icon(Symbols.arrow_back, color: Colors.grey[600]),
               ),
               Expanded(
                 child: Text(
@@ -103,9 +97,9 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
               const SizedBox(width: 48), // 뒤로가기 버튼과 대칭을 맞추기 위해
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 기록 정보 카드
           Container(
             padding: const EdgeInsets.all(16.0),
@@ -151,7 +145,7 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
                         ),
                       ],
                     ),
-                    
+
                     // 카테고리
                     Column(
                       children: [
@@ -164,7 +158,7 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
                           ),
                           child: Center(
                             child: Icon(
-                              MaterialSymbols.category,
+                              Symbols.category,
                               size: 24,
                               color: Colors.purple[700],
                             ),
@@ -181,7 +175,7 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
                         ),
                       ],
                     ),
-                    
+
                     // 시간
                     Column(
                       children: [
@@ -194,7 +188,7 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
                           ),
                           child: Center(
                             child: Icon(
-                              MaterialSymbols.timer,
+                              Symbols.timer,
                               size: 24,
                               color: Colors.blue[700],
                             ),
@@ -213,9 +207,9 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // 부제목
                 Text(
                   widget.record.subtitle,
@@ -226,16 +220,13 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 // 날짜
                 Text(
                   widget.record.date,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[500],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                 ),
               ],
             ),
@@ -268,10 +259,7 @@ class _RecordDetailScreenState extends State<RecordDetailScreen>
         ),
         labelColor: Colors.purple[700],
         unselectedLabelColor: Colors.grey[600],
-        labelStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
+        labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         unselectedLabelStyle: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
