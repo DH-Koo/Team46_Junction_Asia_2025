@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../../services/api_config.dart';
+import 'report_loading_screen.dart';
 
 class RankChatScreenBeta extends StatefulWidget {
   final int roomId;
@@ -53,7 +54,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
   // 타이머 관련 변수들
   Timer? _timer;
-  int _remainingSeconds = 180; // 3분 = 180초
+  int _remainingSeconds = 60; // 3분 = 180초
+
+  // 게임 종료 관련 변수들
+  bool _isGameFinished = false;
+  bool _showFinishText = false;
 
   // 애니메이션 컨트롤러
   late AnimationController _countdownController;
@@ -168,7 +173,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
         final sender = data['sender'] as int;
         final images = data['images'] as List<dynamic>?;
         final imgUrls = data['img_urls'] as List<dynamic>?;
-        final isFromUser = sender == 2; // sender가 1인 경우 유저 메시지로 간주
+        final isFromUser = sender == 1; // sender가 1인 경우 유저 메시지로 간주
 
         // 로컬에서 보낸 메시지가 아닌 경우에만 메시지 추가
         if (!isFromUser) {
@@ -358,8 +363,30 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
         } else {
           timer.cancel();
           // 시간 종료 처리
+          _onGameFinished();
         }
       });
+    });
+  }
+
+  // 게임 종료 처리
+  void _onGameFinished() {
+    setState(() {
+      _isGameFinished = true;
+      _showFinishText = true;
+    });
+
+    // 애니메이션 시작
+    _countdownController.reset();
+    _countdownController.forward();
+
+    // 1초 후 report_loading_screen으로 이동
+    Timer(const Duration(seconds: 1), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => ReportLoadingScreen(roomId: widget.roomId, userId: widget.userId),
+        ),
+      );
     });
   }
 
@@ -420,6 +447,33 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
                         child: Text(
                           _countdownText,
                           style: const TextStyle(
+                            fontSize: 80,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+
+          // 게임 종료 오버레이
+          if (_showFinishText)
+            Container(
+              color: Colors.black.withOpacity(0.7),
+              child: Center(
+                child: AnimatedBuilder(
+                  animation: _countdownController,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: _countdownAnimation.value,
+                      child: Opacity(
+                        opacity: _fadeAnimation.value,
+                        child: const Text(
+                          "Finish!",
+                          style: TextStyle(
                             fontSize: 80,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -744,6 +798,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
               ),
               child: TextField(
                 controller: _messageController,
+                enabled: !_isGameFinished, // 게임 종료 시 입력 비활성화
                 decoration: const InputDecoration(
                   hintText: "Type a message",
                   border: InputBorder.none,
@@ -758,8 +813,12 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
           // 전송 버튼
           GestureDetector(
-            onTap: _sendMessage,
-            child: const Icon(Icons.send, color: Colors.black, size: 30),
+            onTap: _isGameFinished ? null : _sendMessage, // 게임 종료 시 비활성화
+            child: Icon(
+              Icons.send, 
+              color: _isGameFinished ? Colors.grey : Colors.black, 
+              size: 30
+            ),
           ),
         ],
       ),

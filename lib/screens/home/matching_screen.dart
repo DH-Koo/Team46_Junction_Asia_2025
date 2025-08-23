@@ -24,7 +24,7 @@ class _MatchingScreenState extends State<MatchingScreen>
   String? _matchingError;
 
   // 사용자 ID (실제로는 인증 서비스에서 가져와야 함)
-  final int _userId = 2;
+  final int _userId = 1;
 
   // 한국어/영어 더미 데이터
   final List<Map<String, String>> phrases = [
@@ -213,23 +213,23 @@ class _MatchingScreenState extends State<MatchingScreen>
           child: Column(
             children: [
               // 개발용 이동 버튼들 (상단에 추가)
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _navigateToRankChat,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[400],
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    '[개발용] 랭크 채팅',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
+              // Expanded(
+              //   child: ElevatedButton(
+              //     onPressed: _navigateToRankChat,
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: Colors.red[400],
+              //       foregroundColor: Colors.white,
+              //       elevation: 0,
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //     ),
+              //     child: const Text(
+              //       '[개발용] 랭크 채팅',
+              //       style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              //     ),
+              //   ),
+              // ),
 
               const SizedBox(height: 40),
 
