@@ -28,6 +28,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
   // 웹소켓 관련 변수들
   WebSocketChannel? _channel;
+  StreamSubscription? _webSocketSubscription;
   bool _isConnected = false;
 
   // 메시지 애니메이션 관련 변수들
@@ -54,7 +55,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
   // 타이머 관련 변수들
   Timer? _timer;
-  int _remainingSeconds = 60; // 3분 = 180초
+  int _remainingSeconds = 10; // 3분 = 180초
 
   // 게임 종료 관련 변수들
   bool _isGameFinished = false;
@@ -90,10 +91,12 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
   void _startCountdown() async {
     // 3초 카운트다운
     for (int i = 3; i >= 1; i--) {
-      setState(() {
-        _countdownNumber = i;
-        _countdownText = i.toString();
-      });
+      if (mounted) {
+        setState(() {
+          _countdownNumber = i;
+          _countdownText = i.toString();
+        });
+      }
 
       _countdownController.reset();
       _countdownController.forward();
@@ -102,9 +105,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     }
 
     // START! 표시
-    setState(() {
-      _countdownText = "START!";
-    });
+    if (mounted) {
+      setState(() {
+        _countdownText = "START!";
+      });
+    }
 
     _countdownController.reset();
     _countdownController.forward();
@@ -112,10 +117,12 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     await Future.delayed(const Duration(seconds: 1));
 
     // 카운트다운 완료, 게임 시작
-    setState(() {
-      _isCountdownActive = false;
-      _isGameStarted = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isCountdownActive = false;
+        _isGameStarted = true;
+      });
+    }
 
     // 타이머 시작
     _startTimer();
@@ -134,25 +141,33 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
       _channel = WebSocketChannel.connect(uri);
 
-      _channel!.stream.listen(
+      _webSocketSubscription = _channel!.stream.listen(
         (message) {
-          _handleWebSocketMessage(message);
+          if (mounted) {
+            _handleWebSocketMessage(message);
+          }
         },
         onError: (error) {
           print('웹소켓 오류: $error');
-          _showErrorSnackBar('웹소켓 연결 오류: $error');
+          if (mounted) {
+            _showErrorSnackBar('웹소켓 연결 오류: $error');
+          }
         },
         onDone: () {
           print('웹소켓 연결 종료');
-          setState(() {
-            _isConnected = false;
-          });
+          if (mounted) {
+            setState(() {
+              _isConnected = false;
+            });
+          }
         },
       );
 
-      setState(() {
-        _isConnected = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isConnected = true;
+        });
+      }
 
       print('웹소켓 연결 성공');
     } catch (e) {
@@ -187,9 +202,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
           _addMessage(chatMessage);
 
           // 상대방 메시지 수신 시 왼쪽 카드 하이라이트
-          setState(() {
-            _highlightedCharacterIndex = 0; // IBM (왼쪽)
-          });
+          if (mounted) {
+            setState(() {
+              _highlightedCharacterIndex = 0; // IBM (왼쪽)
+            });
+          }
 
           // 폭탄 인디케이터 시작
           _resetBombIndicator();
@@ -206,9 +223,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
   // 메시지 추가
   void _addMessage(ChatMessage message) {
-    setState(() {
-      _messages.add(message);
-    });
+    if (mounted) {
+      setState(() {
+        _messages.add(message);
+      });
+    }
 
     // 메시지 애니메이션 컨트롤러 추가
     final controller = AnimationController(
@@ -249,9 +268,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
       _addMessage(chatMessage);
 
       // 내 메시지 전송 시 오른쪽 카드 하이라이트
-      setState(() {
-        _highlightedCharacterIndex = 1; // Student1 (오른쪽)
-      });
+      if (mounted) {
+        setState(() {
+          _highlightedCharacterIndex = 1; // Student1 (오른쪽)
+        });
+      }
 
       // 입력 필드 초기화
       _messageController.clear();
@@ -284,9 +305,11 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
   // 에러 스낵바 표시
   void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: Colors.red),
+      );
+    }
   }
 
   void _resetBombIndicator() {
@@ -294,29 +317,35 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     _bombTimer?.cancel();
 
     // 폭탄 터짐 상태 초기화
-    setState(() {
-      _bombProgress = 1.0;
-      _isBombActive = true;
-      _isBombExploded = false;
-    });
+    if (mounted) {
+      setState(() {
+        _bombProgress = 1.0;
+        _isBombActive = true;
+        _isBombExploded = false;
+      });
+    }
 
     // 진행 바가 점점 줄어들도록 타이머 시작
     _bombTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
-      setState(() {
-        if (_bombProgress > 0.0) {
-          _bombProgress -= 0.005; // 1.5초 동안 0%까지 줄어들도록
-        } else {
-          _bombProgress = 0.0;
-          _isBombActive = false;
-          _isBombExploded = true; // 폭탄이 터짐
-          timer.cancel();
+      if (mounted) {
+        setState(() {
+          if (_bombProgress > 0.0) {
+            _bombProgress -= 0.005; // 1.5초 동안 0%까지 줄어들도록
+          } else {
+            _bombProgress = 0.0;
+            _isBombActive = false;
+            _isBombExploded = true; // 폭탄이 터짐
+            timer.cancel();
 
-          // motion5.gif가 한번 진행된 후 게임 재시작
-          Future.delayed(const Duration(milliseconds: 5500), () {
-            _restartGame();
-          });
-        }
-      });
+            // motion5.gif가 한번 진행된 후 게임 재시작
+            Future.delayed(const Duration(milliseconds: 5500), () {
+              if (mounted) {
+                _restartGame();
+              }
+            });
+          }
+        });
+      }
     });
   }
 
@@ -326,21 +355,29 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     _bombTimer?.cancel();
 
     // 웹소켓 연결 해제
-    _disconnectWebSocket();
+    _webSocketSubscription?.cancel();
+    _webSocketSubscription = null;
+    
+    if (_channel != null) {
+      _channel!.sink.close(status.goingAway);
+      _channel = null;
+    }
 
     // 상태 초기화
-    setState(() {
-      _isGameStarted = false;
-      _isCountdownActive = true;
-      _countdownNumber = 3;
-      _countdownText = "3";
-      _remainingSeconds = _savedRemainingSeconds; // 저장된 시간에서 시작
-      _messages.clear();
-      _highlightedCharacterIndex = -1;
-      _isBombExploded = false;
-      _bombProgress = 1.0;
-      _isBombActive = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isGameStarted = false;
+        _isCountdownActive = true;
+        _countdownNumber = 3;
+        _countdownText = "3";
+        _remainingSeconds = _savedRemainingSeconds; // 저장된 시간에서 시작
+        _messages.clear();
+        _highlightedCharacterIndex = -1;
+        _isBombExploded = false;
+        _bombProgress = 1.0;
+        _isBombActive = false;
+      });
+    }
 
     // 메시지 애니메이션 컨트롤러들 리셋
     for (var controller in _messageControllers) {
@@ -355,26 +392,39 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_remainingSeconds > 0) {
-          _remainingSeconds--;
-          // 현재 남은 시간을 저장 (게임 재시작 시 사용)
-          _savedRemainingSeconds = _remainingSeconds;
-        } else {
-          timer.cancel();
-          // 시간 종료 처리
-          _onGameFinished();
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (_remainingSeconds > 0) {
+            _remainingSeconds--;
+            // 현재 남은 시간을 저장 (게임 재시작 시 사용)
+            _savedRemainingSeconds = _remainingSeconds;
+          } else {
+            timer.cancel();
+            // 시간 종료 처리
+            _onGameFinished();
+          }
+        });
+      }
     });
   }
 
   // 게임 종료 처리
   void _onGameFinished() {
-    setState(() {
-      _isGameFinished = true;
-      _showFinishText = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isGameFinished = true;
+        _showFinishText = true;
+      });
+    }
+
+    // WebSocket 연결 정리
+    _webSocketSubscription?.cancel();
+    _webSocketSubscription = null;
+    
+    if (_channel != null) {
+      _channel!.sink.close(status.goingAway);
+      _channel = null;
+    }
 
     // 애니메이션 시작
     _countdownController.reset();
@@ -382,24 +432,17 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
     // 1초 후 report_loading_screen으로 이동
     Timer(const Duration(seconds: 1), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => ReportLoadingScreen(roomId: widget.roomId, userId: widget.userId),
-        ),
-      );
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => ReportLoadingScreen(roomId: widget.roomId, userId: widget.userId),
+          ),
+        );
+      }
     });
   }
 
-  // 웹소켓 연결 해제
-  void _disconnectWebSocket() {
-    if (_channel != null) {
-      _channel!.sink.close(status.goingAway);
-      _channel = null;
-    }
-    setState(() {
-      _isConnected = false;
-    });
-  }
+
 
   String _formatTime(int seconds) {
     int minutes = seconds ~/ 60;
@@ -831,7 +874,16 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     _countdownController.dispose();
     _timer?.cancel();
     _bombTimer?.cancel();
-    _disconnectWebSocket();
+    
+    // WebSocket 연결 안전하게 정리
+    _webSocketSubscription?.cancel();
+    _webSocketSubscription = null;
+    
+    if (_channel != null) {
+      _channel!.sink.close(status.goingAway);
+      _channel = null;
+    }
+    
     for (var controller in _messageControllers) {
       controller.dispose();
     }
