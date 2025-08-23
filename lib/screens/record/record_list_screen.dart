@@ -77,43 +77,35 @@ class _RecordScreenState extends State<RecordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          '기록',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-        ),
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black87),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // 상단 통계 섹션
-            _buildStatisticsSection(),
-            const SizedBox(height: 24),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // 상단 통계 섹션
+              _buildStatisticsSection(),
+              const SizedBox(height: 24),
 
-            // 전적 기록 제목
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '전적 기록',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+              // 전적 기록 제목
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '전적 기록',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // 전적 기록 리스트
-            ...gameRecords.map((record) => _buildRecordPost(record)),
-          ],
+              // 전적 기록 리스트
+              ...gameRecords.map((record) => _buildRecordPost(record)),
+            ],
+          ),
         ),
       ),
     );
