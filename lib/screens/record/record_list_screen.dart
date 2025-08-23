@@ -16,7 +16,10 @@ class _RecordScreenState extends State<RecordScreen> {
     {
       'topic': '자유 주제',
       'participants': ['베이비쿼카', '플레이어2', '플레이어3'],
-      'scoreChange': 15,
+      'scoreChange': 60,
+      'currentScore': 400, // 게임 후 점수
+      'previousScore': 340, // 게임 전 점수
+      'tier': 2,
       'sentenceCount': 12,
       'bombCount': 2,
       'conversationAccuracy': 85.5,
@@ -28,7 +31,10 @@ class _RecordScreenState extends State<RecordScreen> {
     {
       'topic': '여행 계획',
       'participants': ['베이비쿼카', '플레이어4'],
-      'scoreChange': -8,
+      'scoreChange': -20,
+      'currentScore': 340, // 게임 후 점수
+      'previousScore': 360, // 게임 전 점수
+      'tier': 1,
       'sentenceCount': 15,
       'bombCount': 4,
       'conversationAccuracy': 72.3,
@@ -40,7 +46,10 @@ class _RecordScreenState extends State<RecordScreen> {
     {
       'topic': '음식 리뷰',
       'participants': ['베이비쿼카', '플레이어5', '플레이어6', '플레이어7'],
-      'scoreChange': 22,
+      'scoreChange': 80,
+      'currentScore': 360, // 게임 후 점수
+      'previousScore': 280, // 게임 전 점수
+      'tier': 1,
       'sentenceCount': 18,
       'bombCount': 1,
       'conversationAccuracy': 92.1,
@@ -48,6 +57,21 @@ class _RecordScreenState extends State<RecordScreen> {
       'vocabularyErrors': 1,
       'date': '2024.01.13',
       'duration': '12분',
+    },
+    {
+      'topic': '영화 토론',
+      'participants': ['베이비쿼카', '플레이어8', '플레이어9'],
+      'scoreChange': 60,
+      'currentScore': 280, // 게임 후 점수
+      'previousScore': 220, // 게임 전 점수
+      'tier': 1,
+      'sentenceCount': 22,
+      'bombCount': 0,
+      'conversationAccuracy': 100.0,
+      'grammarErrors': 0,
+      'vocabularyErrors': 0,
+      'date': '2024.01.12',
+      'duration': '15분',
     },
   ];
 
@@ -61,6 +85,7 @@ class _RecordScreenState extends State<RecordScreen> {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
         ),
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black87),
       ),
@@ -156,10 +181,10 @@ class _RecordScreenState extends State<RecordScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildTierHexagon(1),
+                  _buildTierHexagon(2),
                   // const SizedBox(height: 4),
                   Text(
-                    '360',
+                    '400',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -227,7 +252,7 @@ class _RecordScreenState extends State<RecordScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Symbols.bomb, color: Colors.red[400], size: 20),
+            Icon(Symbols.bomb, color: Colors.black, size: 20, fill: 1),
             const SizedBox(width: 4),
             const Text(
               '2.3',
@@ -385,7 +410,7 @@ class _RecordScreenState extends State<RecordScreen> {
 
                 // 통계 정보 - 새로운 레이아웃
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // 왼쪽: 티어, 점수, 점수 변화
                     Expanded(flex: 1, child: _buildScoreSection(record)),
@@ -410,11 +435,11 @@ class _RecordScreenState extends State<RecordScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildTierHexagon(1), // 임시로 1티어
+            _buildTierHexagon(record['tier']),
             const SizedBox(width: 8),
-            const Text(
-              '360',
-              style: TextStyle(
+            Text(
+              '${record['currentScore']}',
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
@@ -452,11 +477,10 @@ class _RecordScreenState extends State<RecordScreen> {
   Widget _buildStatsBars(Map<String, dynamic> record) {
     final statsData = [
       {
-        'label': '문장 개수',
+        'label': '정확도',
         'value': record['sentenceCount'],
         'maxValue': 20,
         'color': const Color(0xFF6366F1),
-        'suffix': '개',
         'accuracy': record['conversationAccuracy'],
       },
       {
@@ -464,21 +488,18 @@ class _RecordScreenState extends State<RecordScreen> {
         'value': record['bombCount'],
         'maxValue': 5,
         'color': Colors.red[400],
-        'suffix': '개',
       },
       {
         'label': '문법 오류',
         'value': record['grammarErrors'],
         'maxValue': 5,
         'color': Colors.orange[400],
-        'suffix': '개',
       },
       {
         'label': '어휘 오류',
         'value': record['vocabularyErrors'],
         'maxValue': 5,
         'color': Colors.orange[600],
-        'suffix': '개',
       },
     ];
 
@@ -502,22 +523,33 @@ class _RecordScreenState extends State<RecordScreen> {
                   ),
                   Row(
                     children: [
-                      Text(
-                        '${data['value']}${data['suffix']}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
                       if (data['accuracy'] != null) ...[
-                        const SizedBox(width: 4),
+                        // 정확도 항목의 경우 (문장 개수) 퍼센트 순서로 표시
                         Text(
-                          '(${(data['accuracy'] as double).toStringAsFixed(1)}%)',
+                          '(총 문장 ${data['value']}개)',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
                             color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${(data['accuracy'] as double).toStringAsFixed(1)}%',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ] else ...[
+                        // 다른 항목들은 기존 방식
+                        Text(
+                          '${data['value']}개',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
                           ),
                         ),
                       ],
@@ -534,8 +566,10 @@ class _RecordScreenState extends State<RecordScreen> {
                 ),
                 child: FractionallySizedBox(
                   alignment: Alignment.centerLeft,
-                  widthFactor:
-                      (data['value'] as int) / (data['maxValue'] as int),
+                  widthFactor: data['accuracy'] != null
+                      ? (data['accuracy'] as double) /
+                            100 // 정확도는 퍼센트 기준
+                      : (data['value'] as int) / (data['maxValue'] as int),
                   child: Container(
                     decoration: BoxDecoration(
                       color: data['color'] as Color,
@@ -566,14 +600,14 @@ class ScoreChartPainter extends CustomPainter {
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
-    // 진행률 호 (72% 가정)
+    // 진행률 호 (5% 가정)
     final progressPaint = Paint()
       ..color = const Color(0xFF6366F1)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 8
       ..strokeCap = StrokeCap.round;
 
-    const sweepAngle = 2 * math.pi * 0.72; // 72%
+    const sweepAngle = 2 * math.pi * 0.05; // 5%
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       -math.pi / 2, // 시작 각도 (12시 방향)
