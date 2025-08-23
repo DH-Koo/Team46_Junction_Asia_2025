@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../chat/rank_chat_screen.dart';
+import '../chat/rank_chat_screen_beta.dart';
 import '../../services/chat_websocket_service.dart';
 
 class MatchingScreen extends StatefulWidget {
@@ -22,6 +22,9 @@ class _MatchingScreenState extends State<MatchingScreen>
   final ChatWebSocketService _webSocketService = ChatWebSocketService();
   bool _isMatching = false;
   String? _matchingError;
+
+  // 사용자 ID (실제로는 인증 서비스에서 가져와야 함)
+  final int _userId = 1;
 
   // 한국어/영어 더미 데이터
   final List<Map<String, String>> phrases = [
@@ -147,7 +150,7 @@ class _MatchingScreenState extends State<MatchingScreen>
 
     try {
       await _webSocketService.joinMatchingQueue(
-        userId: 2, // 실제로는 사용자 ID를 동적으로 가져와야 함
+        userId: _userId,
         partySize: widget.gameSettings['party_size'] ?? 2,
         onMatched: _onMatched,
         onError: _onMatchingError,
@@ -169,7 +172,10 @@ class _MatchingScreenState extends State<MatchingScreen>
     // 매칭 완료 후 채팅 화면으로 이동
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => RankChatScreen()),
+      MaterialPageRoute(
+        builder: (context) =>
+            RankChatScreenBeta(roomId: chatRoomId, userId: _userId),
+      ),
     );
   }
 
@@ -191,7 +197,9 @@ class _MatchingScreenState extends State<MatchingScreen>
   void _navigateToRankChat() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const RankChatScreen()),
+      MaterialPageRoute(
+        builder: (context) => RankChatScreenBeta(roomId: 1, userId: _userId),
+      ),
     );
   }
 
