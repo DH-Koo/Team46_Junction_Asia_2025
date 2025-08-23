@@ -39,6 +39,9 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   // 사용자 대화의 인덱스들을 저장
   late List<int> _userMessageIndices;
 
+  // 스크롤 컨트롤러 추가
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +67,17 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
     if (_currentStep < _userMessageIndices.length - 1) {
       setState(() {
         _currentStep++;
+      });
+
+      // 새로운 메시지가 추가된 후 자동으로 스크롤
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
       });
     }
   }
@@ -167,6 +181,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
 
   Widget _buildChatMessages() {
     return ListView.builder(
+      controller: _scrollController,
       padding: const EdgeInsets.all(16.0),
       itemCount: _visibleMessages.length,
       itemBuilder: (context, index) {
@@ -477,6 +492,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 }

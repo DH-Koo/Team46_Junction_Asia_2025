@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'api_config.dart';
@@ -23,10 +22,10 @@ class ChatWebSocketService {
     _onError = onError;
 
     try {
-      final uri = Uri.parse('wss://${ApiConfig.host}/ws/match/?user_id=$userId');
+      final uri = Uri.parse('ws://${ApiConfig.host}/ws/match/?user_id=$userId');
       print('uri: $uri');
       _channel = WebSocketChannel.connect(uri);
-      
+
       _channel!.stream.listen(
         (message) {
           _handleMessage(message);
@@ -60,7 +59,7 @@ class ChatWebSocketService {
   void _handleMessage(dynamic message) {
     try {
       final data = jsonDecode(message);
-      
+
       if (data['event'] == 'matched') {
         final chatRoomId = data['chat_room_id'] as int;
         _onMatched?.call(chatRoomId);
@@ -76,9 +75,7 @@ class ChatWebSocketService {
   // 매칭 큐에서 나가기
   void leaveMatchingQueue() {
     if (_isConnected && _channel != null) {
-      final leaveMessage = {
-        'type': 'leave_queue',
-      };
+      final leaveMessage = {'type': 'leave_queue'};
       _channel!.sink.add(jsonEncode(leaveMessage));
     }
   }

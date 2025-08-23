@@ -17,7 +17,7 @@ class _MatchingScreenState extends State<MatchingScreen>
   int currentPhraseIndex = 0;
   late AnimationController _bubbleController;
   late Animation<double> _bubbleAnimation;
-  
+
   // 웹소켓 서비스
   final ChatWebSocketService _webSocketService = ChatWebSocketService();
   bool _isMatching = false;
@@ -104,7 +104,7 @@ class _MatchingScreenState extends State<MatchingScreen>
 
     _bubbleController.forward();
     _startPhraseRotation();
-    
+
     // 웹소켓으로 매칭 큐에 참가
     _startMatching();
   }
@@ -147,7 +147,7 @@ class _MatchingScreenState extends State<MatchingScreen>
 
     try {
       await _webSocketService.joinMatchingQueue(
-        userId: 1, // 실제로는 사용자 ID를 동적으로 가져와야 함
+        userId: 2, // 실제로는 사용자 ID를 동적으로 가져와야 함
         partySize: widget.gameSettings['party_size'] ?? 2,
         onMatched: _onMatched,
         onError: _onMatchingError,
@@ -165,13 +165,11 @@ class _MatchingScreenState extends State<MatchingScreen>
     setState(() {
       _isMatching = false;
     });
-    
+
     // 매칭 완료 후 채팅 화면으로 이동
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (context) => RankChatScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => RankChatScreen()),
     );
   }
 
@@ -349,7 +347,11 @@ class _MatchingScreenState extends State<MatchingScreen>
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.error_outline, color: Colors.red[400], size: 20),
+                      Icon(
+                        Icons.error_outline,
+                        color: Colors.red[400],
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -409,7 +411,10 @@ class _MatchingScreenState extends State<MatchingScreen>
                     ),
                     child: const Text(
                       '재시도',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
