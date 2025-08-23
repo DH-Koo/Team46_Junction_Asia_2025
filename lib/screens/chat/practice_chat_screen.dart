@@ -39,12 +39,10 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
           children: [
             // 상단 헤더
             _buildHeader(),
-            
+
             // 채팅 메시지 영역
-            Expanded(
-              child: _buildChatMessages(),
-            ),
-            
+            Expanded(child: _buildChatMessages()),
+
             // 추천 응답 및 입력 영역
             _buildBottomSection(),
           ],
@@ -72,7 +70,10 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
           // 레스토랑 컨텍스트
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(20),
@@ -101,9 +102,9 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
               ),
             ),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // 시간
           Column(
             children: [
@@ -155,17 +156,17 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.purple[100],
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   message.text,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                  ),
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
               ),
             ),
@@ -198,7 +199,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 ),
               ),
             ),
-            
+
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +223,10 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                           maxWidth: MediaQuery.of(context).size.width * 0.7,
                         ),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 12.0,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(20),
@@ -238,16 +242,20 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                                 ),
                               ),
                               // 한국어 번역 (전구 아이콘 클릭 시에만 표시)
-                              if (_showTranslations[_messages.indexOf(message)] == true && message.koreanTranslation != null) ...[
+                              if (_showTranslations[_messages.indexOf(
+                                        message,
+                                      )] ==
+                                      true &&
+                                  message.koreanTranslation != null) ...[
                                 const SizedBox(height: 8),
                                 Text(
-                                    message.koreanTranslation!,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey[600],
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  message.koreanTranslation!,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
                                   ),
+                                ),
                               ],
                             ],
                           ),
@@ -259,12 +267,19 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                         onTap: () {
                           setState(() {
                             final messageIndex = _messages.indexOf(message);
-                            _showTranslations[messageIndex] = !(_showTranslations[messageIndex] ?? false);
+                            _showTranslations[messageIndex] =
+                                !(_showTranslations[messageIndex] ?? false);
                           });
                         },
                         child: Icon(
-                          _showTranslations[_messages.indexOf(message)] == true ? Icons.lightbulb : Icons.lightbulb_outline,
-                          color: _showTranslations[_messages.indexOf(message)] == true ? Colors.amber : Colors.amber[600],
+                          _showTranslations[_messages.indexOf(message)] == true
+                              ? Icons.lightbulb
+                              : Icons.lightbulb_outline,
+                          color:
+                              _showTranslations[_messages.indexOf(message)] ==
+                                  true
+                              ? Colors.amber
+                              : Colors.amber[600],
                           size: 20,
                         ),
                       ),
@@ -273,10 +288,6 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 ),
               ],
             ),
-            
-
-            
-
           ],
         ),
       );
@@ -314,9 +325,9 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // 추천 응답 버튼들
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -326,7 +337,9 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                   const SizedBox(width: 8),
                   _buildRecommendationButton("No, thanks."),
                   const SizedBox(width: 8),
-                  _buildRecommendationButton("Could you recommend something else?"),
+                  _buildRecommendationButton(
+                    "Could you recommend something else?",
+                  ),
                   const SizedBox(width: 8),
                   _buildRecommendationButton("I'd like to see the menu."),
                   const SizedBox(width: 8),
@@ -334,31 +347,35 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 16),
           ],
-          
+
           const SizedBox(height: 16),
-          
+
           // 메시지 입력 영역
-                      Row(
-              children: [
-                // 전구 아이콘 (클릭 가능)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _showRecommendations = !_showRecommendations;
-                    });
-                  },
-                  child: Icon(
-                    _showRecommendations ? Icons.lightbulb : Icons.lightbulb_outline,
-                    color: _showRecommendations ? Colors.amber : Colors.amber[600],
-                    size: 24,
-                  ),
+          Row(
+            children: [
+              // 전구 아이콘 (클릭 가능)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _showRecommendations = !_showRecommendations;
+                  });
+                },
+                child: Icon(
+                  _showRecommendations
+                      ? Icons.lightbulb
+                      : Icons.lightbulb_outline,
+                  color: _showRecommendations
+                      ? Colors.amber
+                      : Colors.amber[600],
+                  size: 24,
                 ),
-              
+              ),
+
               const SizedBox(width: 12),
-              
+
               // 입력 필드
               Expanded(
                 child: Container(
@@ -372,23 +389,16 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                     decoration: const InputDecoration(
                       hintText: "Type a message",
                       border: InputBorder.none,
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                      ),
+                      hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ),
                 ),
               ),
-              
+
               const SizedBox(width: 12),
-              
+
               // 전송 버튼
-                const Icon(
-                  Icons.send,
-                  color: Colors.black,
-                  size: 30,
-                ),
+              const Icon(Icons.send, color: Colors.black, size: 30),
             ],
           ),
         ],
@@ -405,15 +415,12 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
       ),
       child: Center(
         child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.black87,
+          text,
+          style: const TextStyle(fontSize: 14, color: Colors.black87),
+          textAlign: TextAlign.start,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
         ),
-        textAlign: TextAlign.start,
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-      ),
       ),
     );
   }
