@@ -194,15 +194,6 @@ class _MatchingScreenState extends State<MatchingScreen>
     Navigator.of(context).pop();
   }
 
-  void _navigateToRankChat() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RankChatScreenBeta(roomId: 1, userId: _userId),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -212,25 +203,6 @@ class _MatchingScreenState extends State<MatchingScreen>
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
-              // 개발용 이동 버튼들 (상단에 추가)
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _navigateToRankChat,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[400],
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    '[개발용] 랭크 채팅',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-
               const SizedBox(height: 40),
 
               // 매칭 제목

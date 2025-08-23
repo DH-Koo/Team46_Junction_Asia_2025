@@ -48,7 +48,6 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
   // 카운트다운 관련 변수들
   bool _isCountdownActive = true;
   bool _isGameStarted = false;
-  int _countdownNumber = 3;
   String _countdownText = "3";
 
   // 타이머 관련 변수들
@@ -86,7 +85,6 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     // 3초 카운트다운
     for (int i = 3; i >= 1; i--) {
       setState(() {
-        _countdownNumber = i;
         _countdownText = i.toString();
       });
 
@@ -167,7 +165,6 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
         final text = data['text'] as String;
         final sender = data['sender'] as int;
         final images = data['images'] as List<dynamic>?;
-        final imgUrls = data['img_urls'] as List<dynamic>?;
         final isFromUser = sender == 2; // sender가 1인 경우 유저 메시지로 간주
 
         // 로컬에서 보낸 메시지가 아닌 경우에만 메시지 추가
@@ -259,24 +256,6 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     }
   }
 
-  // 읽음 확인 전송
-  void _sendReadConfirmation(int msgId) {
-    if (!_isConnected) return;
-
-    try {
-      final readMessage = {
-        'event': 'read',
-        'msg_id': msgId,
-        'user_id': widget.userId,
-        'read_count': _messages.length,
-      };
-
-      _channel!.sink.add(jsonEncode(readMessage));
-    } catch (e) {
-      print('읽음 확인 전송 오류: $e');
-    }
-  }
-
   // 에러 스낵바 표시
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -327,7 +306,6 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     setState(() {
       _isGameStarted = false;
       _isCountdownActive = true;
-      _countdownNumber = 3;
       _countdownText = "3";
       _remainingSeconds = _savedRemainingSeconds; // 저장된 시간에서 시작
       _messages.clear();
