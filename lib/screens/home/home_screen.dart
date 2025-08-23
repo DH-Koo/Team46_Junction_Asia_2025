@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../chat/practice_chat_screen.dart';
 import '../chat/rank_chat_screen.dart';
+import '../record/record_list_screen.dart';
+import '../profile/profile_screen.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -193,67 +196,128 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                   const SizedBox(width: 8),
-                  // 트로피 박스
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.orange[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.emoji_events,
-                      color: Colors.orange,
-                      size: 24,
+                  // 프로필 버튼
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.orange[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.orange,
+                        size: 24,
+                      ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 15),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RecordScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 100,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF73BEFF).withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Symbols.article, size: 40, color: Colors.grey[700]),
+                          const SizedBox(width: 10),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '자주 틀리는 문법',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              Text(
+                                'IBM님은 3인칭 단수 문법을 자주 틀려요.',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ]
+                          ),
+                          const Spacer(),
+                          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[700]),
+                        ],
+                      ),
+                    ),
+                  ),
 
               const Spacer(),
 
-              // 말풍선
-              GestureDetector(
-                onTap: _changePhrase,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE8E4FF),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        phrases[currentPhraseIndex]['korean']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        phrases[currentPhraseIndex]['english']!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // // 말풍선
+              // GestureDetector(
+              //   onTap: _changePhrase,
+              //   child: Container(
+              //     margin: const EdgeInsets.symmetric(horizontal: 20),
+              //     padding: const EdgeInsets.all(16),
+              //     decoration: BoxDecoration(
+              //       color: const Color(0xFFE8E4FF),
+              //       borderRadius: BorderRadius.circular(20),
+              //     ),
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           phrases[currentPhraseIndex]['korean']!,
+              //           style: const TextStyle(
+              //             fontSize: 12,
+              //             color: Colors.black87,
+              //             fontWeight: FontWeight.w500,
+              //           ),
+              //         ),
+              //         const SizedBox(height: 4),
+              //         Text(
+              //           phrases[currentPhraseIndex]['english']!,
+              //           style: const TextStyle(
+              //             fontSize: 12,
+              //             color: Colors.black87,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
 
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
 
               // 캐릭터 이미지
               SizedBox(
-                width: 180,
-                height: 180,
+                width: 210,
+                height: 210,
                 child: Image.asset(
                   'assets/image/character.png',
                   fit: BoxFit.contain,
@@ -299,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         )
                       : SizedBox(
-                          height: 80,
+                          height: 90,
                           child: Image.asset(
                             'assets/image/play_button.png',
                             fit: BoxFit.contain,
