@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'record_detail_summary_screen.dart';
 
 class RecordDetailChatScreen extends StatefulWidget {
   const RecordDetailChatScreen({super.key});
@@ -28,7 +29,77 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
       text: "I like watching baseball.",
       isFromUser: true,
     ),
+    ChatMessage(
+      text: "Oh, then would you want some coke?",
+      isFromUser: false,
+    ),
+    
+    ChatMessage(
+      text: "Yes, I'd like a coke.",
+      isFromUser: true,
+    ),
+    ChatMessage(
+      text: "I'd like a coke.",
+      isFromUser: false,
+    ),
+    
+    ChatMessage(
+      text: "I'd like a coke.",
+      isFromUser: true,
+    ),
+    
+    
   ];
+
+  // 현재 단계 (사용자 대화 인덱스)
+  int _currentStep = 0;
+  
+  // 사용자 대화의 인덱스들을 저장
+  late List<int> _userMessageIndices;
+
+  @override
+  void initState() {
+    super.initState();
+    // 사용자 메시지의 인덱스들을 찾아서 저장
+    _userMessageIndices = _messages.asMap().entries
+        .where((entry) => entry.value.isFromUser)
+        .map((entry) => entry.key)
+        .toList();
+  }
+
+  // 현재 단계까지의 메시지만 표시
+  List<ChatMessage> get _visibleMessages {
+    if (_userMessageIndices.isEmpty) return _messages;
+    
+    int endIndex = _userMessageIndices[_currentStep];
+    return _messages.take(endIndex + 1).toList();
+  }
+
+  // 다음 단계로 이동
+  void _nextStep() {
+    if (_currentStep < _userMessageIndices.length - 1) {
+      setState(() {
+        _currentStep++;
+      });
+    }
+  }
+
+  // 이전 단계로 이동
+  void _prevStep() {
+    if (_currentStep > 0) {
+      setState(() {
+        _currentStep--;
+      });
+    }
+  }
+
+  // 현재 단계의 사용자 메시지 인덱스
+  int? get _currentUserMessageIndex {
+    if (_userMessageIndices.isEmpty || _currentStep >= _userMessageIndices.length) {
+      return null;
+    }
+    return _userMessageIndices[_currentStep];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,17 +130,17 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 3,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
+    //   decoration: BoxDecoration(
+    //     color: Colors.white,
+    //     boxShadow: [
+    //       BoxShadow(
+    //         color: Colors.grey.withOpacity(0.1),
+    //         spreadRadius: 1,
+    //         blurRadius: 3,
+    //         offset: const Offset(0, 1),
+    //       ),
+    //     ],
+    //   ),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         decoration: BoxDecoration(
@@ -105,15 +176,16 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   Widget _buildChatMessages() {
     return ListView.builder(
       padding: const EdgeInsets.all(16.0),
-      itemCount: _messages.length,
+      itemCount: _visibleMessages.length,
       itemBuilder: (context, index) {
-        final message = _messages[index];
-        return _buildMessageBubble(message);
+        final message = _visibleMessages[index];
+        final isCurrentUserMessage = index == _currentUserMessageIndex;
+        return _buildMessageBubble(message, isCurrentUserMessage);
       },
     );
   }
 
-  Widget _buildMessageBubble(ChatMessage message) {
+  Widget _buildMessageBubble(ChatMessage message, bool isHighlighted) {
     if (message.isFromUser) {
       // 사용자 메시지 (오른쪽 정렬)
       return Padding(
@@ -130,6 +202,19 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 decoration: BoxDecoration(
                   color: Colors.purple[100],
                   borderRadius: BorderRadius.circular(20),
+                  border: isHighlighted 
+                    ? Border.all(color: Colors.purple[600]!, width: 3)
+                    : null,
+                  boxShadow: isHighlighted 
+                    ? [
+                        BoxShadow(
+                          color: Colors.purple.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
                 ),
                 child: Text(
                   message.text,
@@ -214,7 +299,18 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+        
+        SizedBox(
+            width: 90,
+            height: 90,
+            child: Image.asset(
+              'assets/image/character.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(width: 16),
           // 말풍선
           Expanded(
             child: Container(
@@ -222,15 +318,15 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.grey[300]!),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
+                border: Border.all(color: Colors.grey[400]!),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.grey.withOpacity(0.1),
+                //     spreadRadius: 1,
+                //     blurRadius: 3,
+                //     offset: const Offset(0, 1),
+                //   ),
+                // ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +347,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "이것은 맥락에 맞지 않습니다. 이 경우에는 '네, 콜라 한 잔 주세요'와 같이 대답할 수 있습니다.",
+                    "문맥에 맞지 않는 말이에요.\n이 경우엔 'Yes, i'll have a coke'\n와 같이 답변할 수 있어요.",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[700],
@@ -262,96 +358,15 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
               ),
             ),
           ),
-          
-          const SizedBox(width: 16),
-          
-          // 캐릭터 (말풍선이 가리키는 부분)
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              // 말풍선 꼬리
-              Positioned(
-                left: -8,
-                top: 20,
-                child: CustomPaint(
-                  size: const Size(20, 20),
-                  painter: SpeechBubbleTailPainter(),
-                ),
-              ),
-              
-              // 캐릭터
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.purple[200],
-                  shape: BoxShape.circle,
-                ),
-                child: Stack(
-                  children: [
-                    // 캐릭터 기본 모양
-                    Center(
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.purple[300],
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "Y",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    
-                    // 선글라스
-                    Positioned(
-                      top: 15,
-                      left: 15,
-                      child: Container(
-                        width: 30,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                    
-                    // 망토
-                    Positioned(
-                      bottom: 0,
-                      left: 10,
-                      child: Container(
-                        width: 60,
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Colors.red[400],
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );
   }
 
   Widget _buildNavigationButtons() {
+    final canGoPrev = _currentStep > 0;
+    final isLastStep = _currentStep == _userMessageIndices.length - 1;
+    
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -361,16 +376,23 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.purple[100],
+                color: canGoPrev ? Colors.purple[100] : Colors.grey[300],
                 borderRadius: BorderRadius.circular(25),
               ),
-              child: const Center(
-                child: Text(
-                  "prev",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(25),
+                  onTap: canGoPrev ? _prevStep : null,
+                  child: const Center(
+                    child: Text(
+                      "prev",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -379,27 +401,64 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
           
           const SizedBox(width: 16),
           
-          // 다음 버튼
+          // 단계 표시
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.purple[50],
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.purple[200]!),
+            ),
+            child: Text(
+              '${_currentStep + 1} / ${_userMessageIndices.length}',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.purple[700],
+              ),
+            ),
+          ),
+          
+          const SizedBox(width: 16),
+          
+          // 다음/완료 버튼
           Expanded(
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.purple[100],
+                color: isLastStep ? Colors.green[100] : Colors.purple[100],
                 borderRadius: BorderRadius.circular(25),
               ),
-              child: const Center(
-                child: Text(
-                  "next",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(25),
+                  onTap: isLastStep ? _finishChat : _nextStep,
+                  child: Center(
+                    child: Text(
+                      isLastStep ? "Finish" : "next",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: isLastStep ? Colors.green[700] : Colors.black87,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // 채팅 완료 후 요약 화면으로 이동
+  void _finishChat() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const RecordDetailSummaryScreen(),
       ),
     );
   }
