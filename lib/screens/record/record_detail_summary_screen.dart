@@ -23,12 +23,13 @@ class _RecordDetailSummaryScreenState extends State<RecordDetailSummaryScreen> {
             children: [
               // 상단 헤더
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                    SizedBox(width: 16),
                   // "Cheer up!" 텍스트와 박수 이모지
-                  Expanded(
-                    child: Row(
-                      children: [
-                        const Text(
+                  Row(
+                    children: [
+                      const Text(
                           'Cheer up!',
                           style: TextStyle(
                             fontSize: 24,
@@ -38,15 +39,15 @@ class _RecordDetailSummaryScreenState extends State<RecordDetailSummaryScreen> {
                         ),
                         const SizedBox(width: 8),
                         const Text('👏', style: TextStyle(fontSize: 24)),
-                      ],
-                    ),
+                    ],
                   ),
-                  // 캐릭터 이미지
+                  SizedBox(width: 16),
                   Image.asset(
-                    'assets/image/character.png',
-                    width: 80,
-                    height: 80,
-                  ),
+                        'assets/image/character.png',
+                        width: 80,
+                        height: 80,
+                    ),
+                    SizedBox(width: 16),
                 ],
               ),
 

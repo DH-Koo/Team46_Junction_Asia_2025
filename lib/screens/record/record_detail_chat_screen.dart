@@ -200,10 +200,10 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 decoration: BoxDecoration(
-                  color: Colors.purple[100],
+                  color: Color(0xFFE8E4FF),
                   borderRadius: BorderRadius.circular(20),
                   border: isHighlighted 
-                    ? Border.all(color: Colors.purple[600]!, width: 3)
+                    ? Border.all(color: Colors.purple[300]!, width: 0.7)
                     : null,
                   boxShadow: isHighlighted 
                     ? [
@@ -375,24 +375,35 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
           Expanded(
             child: Container(
               height: 50,
-              decoration: BoxDecoration(
-                color: canGoPrev ? Colors.purple[100] : Colors.grey[300],
-                borderRadius: BorderRadius.circular(25),
-              ),
+            //   decoration: BoxDecoration(
+            //     color: canGoPrev ? Color(0xFFE8E4FF) : Colors.grey[300],
+            //     borderRadius: BorderRadius.circular(25),
+            //   ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25),
                   onTap: canGoPrev ? _prevStep : null,
                   child: const Center(
-                    child: Text(
-                      "prev",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                        Icon(
+                            Icons.arrow_back_ios,
+                            size: 16,
+                            color: Colors.black87,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            "prev",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                    )
                   ),
                 ),
               ),
@@ -402,14 +413,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
           const SizedBox(width: 16),
           
           // 단계 표시
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.purple[50],
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.purple[200]!),
-            ),
-            child: Text(
+          Text(
               '${_currentStep + 1} / ${_userMessageIndices.length}',
               style: TextStyle(
                 fontSize: 14,
@@ -417,7 +421,6 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 color: Colors.purple[700],
               ),
             ),
-          ),
           
           const SizedBox(width: 16),
           
@@ -425,24 +428,44 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
           Expanded(
             child: Container(
               height: 50,
-              decoration: BoxDecoration(
-                color: isLastStep ? Colors.green[100] : Colors.purple[100],
-                borderRadius: BorderRadius.circular(25),
-              ),
+            //   decoration: BoxDecoration(
+            //     color: isLastStep ? Colors.green[100] : Color(0xFFE8E4FF),
+            //     borderRadius: BorderRadius.circular(25),
+            //   ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25),
                   onTap: isLastStep ? _finishChat : _nextStep,
                   child: Center(
-                    child: Text(
-                      isLastStep ? "Finish" : "next",
+                    child: isLastStep ? 
+                    Text(
+                      "Finish",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: isLastStep ? Colors.green[700] : Colors.black87,
+                        color: Colors.green[700],
                       ),
-                    ),
+                    ) : 
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "next",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.black87,
+                          ),
+                        ],
+                    )
                   ),
                 ),
               ),

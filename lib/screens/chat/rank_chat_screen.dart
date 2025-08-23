@@ -255,7 +255,7 @@ class _RankChatScreenState extends State<RankChatScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                 decoration: BoxDecoration(
-                  color: Colors.purple[100],
+                  color: Color(0xFFE8E4FF),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(

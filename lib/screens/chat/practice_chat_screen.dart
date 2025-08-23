@@ -161,7 +161,7 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                   vertical: 12.0,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.purple[100],
+                  color: Color(0xFFE8E4FF),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
