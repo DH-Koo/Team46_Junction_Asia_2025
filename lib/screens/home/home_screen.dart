@@ -185,12 +185,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const Spacer(),
 
-              // 캐릭터 이미지
+              // 캐릭터 애니메이션
               SizedBox(
                 width: 210,
                 height: 210,
                 child: Image.asset(
-                  'assets/image/character.png',
+                  'assets/motion/motion2.gif',
                   fit: BoxFit.contain,
                 ),
               ),

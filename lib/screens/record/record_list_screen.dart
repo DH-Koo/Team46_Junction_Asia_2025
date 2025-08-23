@@ -493,7 +493,7 @@ class _RecordScreenState extends State<RecordScreen> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+                      color: Colors.black54,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -518,7 +518,7 @@ class _RecordScreenState extends State<RecordScreen> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+                      color: Colors.black54,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -549,7 +549,7 @@ class _RecordScreenState extends State<RecordScreen> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+                      color: Colors.black54,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -570,11 +570,11 @@ class _RecordScreenState extends State<RecordScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '문법 및 어휘 오류',
+                    '문법/어휘 오류',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+                      color: Colors.black54,
                     ),
                   ),
                   const SizedBox(height: 2),

@@ -25,7 +25,7 @@ class Friend {
       Friend(
         id: '2',
         name: '현의솔렌',
-        clan: '왕기모찌',
+        clan: '왕왕왕왕',
         score: 9899,
         badge: '🎯',
         isOnline: true,
@@ -40,7 +40,7 @@ class Friend {
       ),
       Friend(
         id: '4',
-        name: '부욱부욱',
+        name: '쿠욱쿠욱',
         clan: '아둔토라이...',
         score: 8122,
         badge: '🎯',

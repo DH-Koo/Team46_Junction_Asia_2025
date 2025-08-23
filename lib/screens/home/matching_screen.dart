@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../chat/practice_chat_screen.dart';
+import '../chat/rank_chat_screen.dart';
 
 class MatchingScreen extends StatefulWidget {
   final Map<String, dynamic> gameSettings;
@@ -23,8 +25,8 @@ class _MatchingScreenState extends State<MatchingScreen>
       'english': 'Hello! The weather is really nice today.',
     },
     {
-      'korean': '게임을 시작할 준비가 되었나요?',
-      'english': 'Are you ready to start the game?',
+      'korean': '대화를 시작할 준비가 되었나요?',
+      'english': 'Are you ready to start the conversation?',
     },
     {
       'korean': '함께 즐거운 시간을 보내봐요!',
@@ -131,6 +133,20 @@ class _MatchingScreenState extends State<MatchingScreen>
     Navigator.of(context).pop();
   }
 
+  void _navigateToPracticeChat() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const PracticeChatScreen()),
+    );
+  }
+
+  void _navigateToRankChat() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const RankChatScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,6 +156,53 @@ class _MatchingScreenState extends State<MatchingScreen>
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
+              // 개발용 이동 버튼들 (상단에 추가)
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _navigateToPracticeChat,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[400],
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        '[개발용] 연습 채팅',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _navigateToRankChat,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red[400],
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        '[개발용] 랭크 채팅',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 40),
 
               // 매칭 제목
@@ -221,7 +284,7 @@ class _MatchingScreenState extends State<MatchingScreen>
 
               const SizedBox(height: 20),
 
-              // 캐릭터 이미지 (중앙에 크게)
+              // 캐릭터 애니메이션 (중앙에 크게)
               Container(
                 width: 200,
                 height: 200,
@@ -231,7 +294,7 @@ class _MatchingScreenState extends State<MatchingScreen>
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
-                    'assets/image/character.png',
+                    'assets/motion/motion1.gif',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
