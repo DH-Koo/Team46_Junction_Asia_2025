@@ -48,6 +48,7 @@ class _RecordDetailSummaryScreenState extends State<RecordDetailSummaryScreen> {
                         height: 80,
                     ),
                     SizedBox(width: 16),
+                  // 캐릭터 이미지
                 ],
               ),
 

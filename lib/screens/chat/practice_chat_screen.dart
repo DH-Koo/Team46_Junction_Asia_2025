@@ -57,12 +57,12 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 3,
-            offset: const Offset(0, 1),
-          ),
+        //   BoxShadow(
+        //     color: Colors.grey.withOpacity(0.1),
+        //     spreadRadius: 1,
+        //     blurRadius: 3,
+        //     offset: const Offset(0, 1),
+        //   ),
         ],
       ),
       child: Row(
@@ -74,28 +74,28 @@ class _PracticeChatScreenState extends State<PracticeChatScreen> {
                 horizontal: 16.0,
                 vertical: 12.0,
               ),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(20),
-              ),
+            //   decoration: BoxDecoration(
+            //     color: Colors.grey[100],
+            //     borderRadius: BorderRadius.circular(20),
+            //   ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Restaurant",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
+                //   Text(
+                //     "Restaurant",
+                //     style: TextStyle(
+                //       fontSize: 12,
+                //       color: Colors.grey[600],
+                //       fontWeight: FontWeight.w500,
+                //     ),
+                //   ),
+                //   const SizedBox(height: 2),
                   Text(
                     "Ordering food at a restaurant.",
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 18,
                       color: Colors.grey[800],
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ],

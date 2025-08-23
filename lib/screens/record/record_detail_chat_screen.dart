@@ -124,7 +124,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
               padding: const EdgeInsets.all(8),
             ),
           ),
-          const SizedBox(width: 12),
+          //const SizedBox(width: 12),
           // 주제 박스
           Expanded(
             child: Container(
@@ -132,28 +132,28 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                 horizontal: 16.0,
                 vertical: 12.0,
               ),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(20),
-              ),
+            //   decoration: BoxDecoration(
+            //     color: Colors.grey[100],
+            //     borderRadius: BorderRadius.circular(20),
+            //   ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                //   Text(
+                //     "Restaurant",
+                //     style: TextStyle(
+                //       fontSize: 12,
+                //       color: Colors.grey[600],
+                //       fontWeight: FontWeight.w500,
+                //     ),
+                //   ),
+                //   const SizedBox(height: 2),
                   Text(
-                    "Restaurant",
+                    "Ordering food at a restaurant",
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    "Ordering food at a restaurant.",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ],
