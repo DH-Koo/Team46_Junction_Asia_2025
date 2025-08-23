@@ -11,10 +11,6 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
           '프로필 정보',
           style: TextStyle(
@@ -23,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        centerTitle: false,
+        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -33,6 +29,7 @@ class ProfileScreen extends StatelessWidget {
             children: [
               // 닉네임
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
                     '베이비쿼카',

@@ -246,7 +246,7 @@ class _RecordScreenState extends State<RecordScreen> {
     final accuracyData = [
       {'label': '문장 정확도', 'value': 61.5, 'color': const Color(0xFF6366F1)},
       {'label': '어휘 정확도', 'value': 68.2, 'color': const Color(0xFF8B5CF6)},
-      {'label': '문법 정확도', 'value': 71.7, 'color': const Color(0xFF06B6D4)},
+      {'label': '문법 정확도', 'value': 50.1, 'color': const Color(0xFF06B6D4)},
     ];
 
     return Column(
