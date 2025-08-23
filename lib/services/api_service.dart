@@ -19,13 +19,13 @@ class ApiService {
     try {
       final url = Uri.parse('${ApiConfig.baseUrl}$endpoint');
       final requestHeaders = headers ?? ApiConfig.getAuthHeaders(token);
-      // print('ApiService requestHeaders: $requestHeaders');
-      // print('ApiService url: $url');
+      print('ApiService requestHeaders: $requestHeaders');
+      print('ApiService url: $url');
       final response = await _client
           .get(url, headers: requestHeaders)
           .timeout(Duration(milliseconds: ApiConfig.connectTimeout));
 
-      // print('ApiService response: ${response.body}');
+      print('ApiService response: ${response.body}');
       if (url.toString().contains('chat')) {
         logLong(response.body, prefix: '[GET ${response.statusCode}]');
       }
@@ -70,12 +70,12 @@ class ApiService {
       final url = Uri.parse('${ApiConfig.baseUrl}$endpoint');
       final requestHeaders = headers ?? ApiConfig.getAuthHeaders(token);
       final requestBody = body != null ? jsonEncode(body) : null;
-      // print('Put ApiService url: $url');
-      // print('Put ApiService requestBody: $requestBody');
+      print('Put ApiService url: $url');
+      print('Put ApiService requestBody: $requestBody');
       final response = await _client
           .put(url, headers: requestHeaders, body: requestBody)
           .timeout(Duration(milliseconds: ApiConfig.connectTimeout));
-      // print('PutApiService response: ${response.body}');
+      print('PutApiService response: ${response.body}');
       return _handleResponse(response);
     } catch (e) {
       throw _handleException(e);
@@ -94,13 +94,13 @@ class ApiService {
       final requestHeaders = headers ?? ApiConfig.getAuthHeaders(token);
       final requestBody = body != null ? jsonEncode(body) : null;
 
-      // print('ApiService url: $url');
-      // print('ApiService requestBody: $requestBody');
+      print('ApiService url: $url');
+      print('ApiService requestBody: $requestBody');
 
       final response = await _client
           .patch(url, headers: requestHeaders, body: requestBody)
           .timeout(Duration(milliseconds: ApiConfig.connectTimeout));
-      // print('ApiService response: ${response.body}');
+      print('ApiService response: ${response.body}');
       return _handleResponse(response);
     } catch (e) {
       throw _handleException(e);
@@ -116,12 +116,12 @@ class ApiService {
     try {
       final url = Uri.parse('${ApiConfig.baseUrl}$endpoint');
       final requestHeaders = headers ?? ApiConfig.getAuthHeaders(token);
-      // print('Delete ApiService url: $url');
+      print('Delete ApiService url: $url');
 
       final response = await _client
           .delete(url, headers: requestHeaders)
           .timeout(Duration(milliseconds: ApiConfig.connectTimeout));
-      // print('Delete ApiService response: ${response.body}');
+      print('Delete ApiService response: ${response.body}');
       return _handleResponse(response);
     } catch (e) {
       throw _handleException(e);

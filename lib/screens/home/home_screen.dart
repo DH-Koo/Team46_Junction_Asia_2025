@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int selectedTopicIndex = 0;
   final List<String> topics = ['자유', '재미', '학습'];
-  int currentTier = 1; // 현재 티어 (1-4)
+  int currentTier = 2; // 현재 티어 (1-4)
 
   void _showGameSettingsDialog() {
     showDialog(
@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _buildTierHexagon(currentTier),
                           const SizedBox(width: 4),
                           const Text(
-                            '360',
+                            '400',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

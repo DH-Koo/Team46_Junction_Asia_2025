@@ -1,8 +1,20 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../models/friend.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  // 사용자 예시 데이터 (실제로는 현재 로그인한 사용자 정보)
+  final int userScore = 400;
+
+  // 사용자 티어 계산
+  int get userTier {
+    if (userScore < 400) return 1;
+    if (userScore < 800) return 2;
+    if (userScore < 1200) return 3;
+    return 4;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,35 +51,56 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
                 children: [
-                  // 프로필 이미지
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(23),
-                      child: Image.asset(
-                        'assets/image/ybm_2d-1.png',
-                        fit: BoxFit.cover,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 프로필 이미지
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(23),
+                          child: Image.asset(
+                            'assets/image/ybm_2d-1.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '베이비쿼카',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(Icons.edit, color: Colors.grey[500], size: 24),
+                    ],
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '베이비쿼카',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  const SizedBox(height: 12),
+                  // 티어 정보
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildTierHexagon(userTier),
+                      const SizedBox(width: 8),
+                      Text(
+                        '$userScore점',
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Icon(Icons.edit, color: Colors.grey[500], size: 24),
                 ],
               ),
               const SizedBox(height: 24),
@@ -95,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          '총 배틀 시간',
+                          '총 회화 시간',
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 10,
@@ -231,11 +264,20 @@ class ProfileScreen extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
+              child: friend.avatar != null
+                  ? Image.asset(friend.avatar!, fit: BoxFit.cover)
+                  : Container(
+                      color: Colors.grey[300],
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey[600],
+                        size: 24,
+                      ),
+                    ),
             ),
-            child: Icon(Icons.person, color: Colors.grey[600], size: 24),
           ),
 
           const SizedBox(width: 12),
@@ -257,20 +299,16 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
 
-          // 트로피와 점수
+          // 티어 배지와 점수
           Row(
             children: [
-              const Icon(
-                Icons.emoji_events,
-                color: Color(0xFFFFD700),
-                size: 20,
-              ),
-              const SizedBox(width: 4),
+              _buildTierHexagon(friend.tier),
+              const SizedBox(width: 8),
               Text(
-                friend.score.toString(),
+                '${friend.score}점',
                 style: const TextStyle(
                   color: Colors.black87,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -280,4 +318,77 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildTierHexagon(int tier) {
+    Color tierColor = _getTierColor(tier);
+
+    return SizedBox(
+      width: 24,
+      height: 24,
+      child: CustomPaint(
+        painter: HexagonPainter(tierColor),
+        child: Center(
+          child: Text(
+            tier.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _getTierColor(int tier) {
+    switch (tier) {
+      case 1:
+        return const Color(0xFFCD7F32); // 브론즈
+      case 2:
+        return const Color(0xFFC0C0C0); // 실버
+      case 3:
+        return const Color(0xFFFFD700); // 골드
+      case 4:
+        return const Color(0xFF50C878); // 에메랄드
+      default:
+        return const Color(0xFFCD7F32); // 기본 브론즈
+    }
+  }
+}
+
+class HexagonPainter extends CustomPainter {
+  final Color color;
+
+  HexagonPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    // 육각형 그리기
+    for (int i = 0; i < 6; i++) {
+      final angle = (i * 60) * (3.14159 / 180); // 60도씩 회전
+      final x = center.dx + radius * 0.8 * cos(angle);
+      final y = center.dy + radius * 0.8 * sin(angle);
+
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

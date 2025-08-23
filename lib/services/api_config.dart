@@ -1,9 +1,10 @@
 class ApiConfig {
   // 기본 API URL 설정
-  static const String baseUrl = ''; // HTTP로 변경
-  static const String serverUrl = ''; // 서버 기본 URL
+  static const String baseUrl = 'http://172.30.1.53:8000/api'; // HTTP로 변경
+  static const String serverUrl = 'http://172.30.1.53:8000'; // 서버 기본 URL
 
   // API 엔드포인트들
+  static const String report = '/ai/report/';
 
   // HTTP 요청 설정
   static const int connectTimeout = 30000; // 30초
