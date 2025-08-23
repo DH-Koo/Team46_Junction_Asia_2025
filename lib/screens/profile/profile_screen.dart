@@ -33,104 +33,195 @@ class ProfileScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '베이비쿼카',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 프로필 이미지
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(23),
+                    child: Image.asset(
+                      'assets/image/ybm_2d-1.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              Icon(Icons.edit, color: Colors.grey[500], size: 24),
-            ],
-          ),
-          // 친구 초대 버튼
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFFB300), Color(0xFFFF8F00)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 4),
+                Text(
+                  '베이비쿼카',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(Icons.edit, color: Colors.grey[500], size: 24),
+              ],
             ),
-            child: const Text(
-              '친구 초대',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+            const SizedBox(height: 24),
 
-          // 순위표 헤더
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            decoration: const BoxDecoration(
-              color: Color(0xFF2A3454),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // 총 배틀 시간 박스
+                Container(
+                  width: 120,
+                  height: 120,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.timer,
+                        color: Color(0xFFB8A9FF),
+                        size: 28,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '총 배틀 시간',
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        '2시간 37분',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                // 완벽 문장 개수 박스
+                Container(
+                  width: 120,
+                  height: 120,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.check_circle,
+                        color: Color(0xFFB8A9FF),
+                        size: 28,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '완벽한 문장',
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        '128개',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            child: const Text(
-              '순위표',
-              textAlign: TextAlign.center,
+            const SizedBox(height: 24),
+            Divider(color: Colors.grey[300], height: 1),
+            const SizedBox(height: 24),
+
+            Text(
+              '소셜',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black87,
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
             ),
-          ),
+            const SizedBox(height: 16),
 
-          // 친구 목록
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              decoration: const BoxDecoration(
-                color: Color(0xFF2A3454),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
+            // 친구 목록
+            Column(
+              children: friends.map((friend) {
+                final index = friends.indexOf(friend);
+                return _buildFriendItem(friend, index + 1);
+              }).toList(),
+            ),
+
+            const SizedBox(height: 24),
+
+            // 친구 초대 버튼
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFB8A9FF),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                '친구 초대',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: friends.length,
-                itemBuilder: (context, index) {
-                  final friend = friends[index];
-                  return _buildFriendItem(friend, index + 1);
-                },
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildFriendItem(Friend friend, int rank) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF3C4B6B),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFF4A5568), width: 1),
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -139,27 +230,13 @@ class ProfileScreen extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFF6B7B9A),
+              color: Colors.grey[300],
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(Icons.person, color: Colors.white, size: 24),
+            child: Icon(Icons.person, color: Colors.grey[600], size: 24),
           ),
 
           const SizedBox(width: 12),
-
-          // 클랜 배지 (있는 경우)
-          if (friend.clan != null) ...[
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: _getClanColor(friend.clan!),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Icon(Icons.shield, color: Colors.white, size: 18),
-            ),
-            const SizedBox(width: 8),
-          ],
 
           // 이름과 클랜 정보
           Expanded(
@@ -169,38 +246,14 @@ class ProfileScreen extends StatelessWidget {
                 Text(
                   friend.name,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                if (friend.clan != null)
-                  Text(
-                    friend.clan!,
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
               ],
             ),
           ),
-
-          // 배지
-          if (friend.badge != null) ...[
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: _getBadgeColor(friend.badge!),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Center(
-                child: Text(
-                  friend.badge!,
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-          ],
 
           // 트로피와 점수
           Row(
@@ -214,7 +267,7 @@ class ProfileScreen extends StatelessWidget {
               Text(
                 friend.score.toString(),
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
@@ -224,33 +277,5 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color _getClanColor(String clan) {
-    switch (clan) {
-      case 'TeamRED':
-        return Colors.red;
-      case '왕기모찌':
-        return Colors.pink;
-      case '아둔토라이...':
-        return Colors.purple;
-      default:
-        return Colors.blue;
-    }
-  }
-
-  Color _getBadgeColor(String badge) {
-    switch (badge) {
-      case '🏆':
-        return Colors.orange;
-      case '🎯':
-        return Colors.red;
-      case '⚔️':
-        return Colors.grey;
-      case '🏅':
-        return Colors.brown;
-      default:
-        return Colors.blue;
-    }
   }
 }

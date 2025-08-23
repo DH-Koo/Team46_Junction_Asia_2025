@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../chat/practice_chat_screen.dart';
 import '../chat/rank_chat_screen.dart';
@@ -15,6 +16,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> topics = ['자유', '재미', '학습'];
   int currentTier = 1; // 현재 티어 (1-4)
   int currentPhraseIndex = 0; // 현재 문구 인덱스
+
+  // 게임 상태 관리
+  bool isGameStarting = false;
+  int countdown = 3;
+  Timer? countdownTimer;
 
   // 더미 문구 데이터
   final List<Map<String, String>> phrases = [
@@ -63,6 +69,78 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    countdownTimer?.cancel();
+    super.dispose();
+  }
+
+  void _showGameSettingsDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const GameSettingsDialog();
+      },
+    ).then((result) {
+      if (result != null) {
+        _startGame(result);
+      }
+    });
+  }
+
+  void _startGame(Map<String, dynamic> settings) {
+    setState(() {
+      isGameStarting = true;
+      countdown = 3;
+    });
+
+    countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        countdown--;
+      });
+
+      if (countdown <= 0) {
+        timer.cancel();
+        _navigateToGame(settings);
+      }
+    });
+  }
+
+  void _navigateToGame(Map<String, dynamic> settings) {
+    final gameMode = settings['mode'];
+
+    if (gameMode == 'practice') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PracticeChatScreen()),
+      ).then((_) {
+        setState(() {
+          isGameStarting = false;
+          countdown = 3;
+        });
+      });
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RankChatScreen()),
+      ).then((_) {
+        setState(() {
+          isGameStarting = false;
+          countdown = 3;
+        });
+      });
+    }
+  }
+
+  void _cancelGame() {
+    countdownTimer?.cancel();
+    setState(() {
+      isGameStarting = false;
+      countdown = 3;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -96,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.black87,
                             ),
                           ),
+                          const SizedBox(width: 10),
                           const Spacer(),
                           // 티어 육각형
                           _buildTierHexagon(currentTier),
@@ -151,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         phrases[currentPhraseIndex]['korean']!,
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.black87,
                           fontWeight: FontWeight.w500,
                         ),
@@ -161,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         phrases[currentPhraseIndex]['english']!,
                         style: const TextStyle(
                           fontSize: 12,
-                          color: Colors.black54,
+                          color: Colors.black87,
                         ),
                       ),
                     ],
@@ -173,8 +252,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // 캐릭터 이미지
               SizedBox(
-                width: 200,
-                height: 200,
+                width: 180,
+                height: 180,
                 child: Image.asset(
                   'assets/image/character.png',
                   fit: BoxFit.contain,
@@ -183,123 +262,49 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const Spacer(),
 
-              // 주제 선택 토글
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(topics.length, (index) {
-                  final isSelected = selectedTopicIndex == index;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedTopicIndex = index;
-                      });
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected ? Colors.grey[700] : Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.grey[400]!, width: 1),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            _getTopicIcon(index),
-                            size: 16,
-                            color: isSelected ? Colors.white : Colors.grey[600],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            topics[index],
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.grey[600],
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }),
-              ),
-
-              const SizedBox(height: 20),
-
-              // 하단 버튼들
+              // 하단 Play/Cancel 버튼
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const PracticeChatScreen(),
-                            ),
-                          );
-                        },
-                        child: Container(
+                child: GestureDetector(
+                  onTap: isGameStarting ? _cancelGame : _showGameSettingsDialog,
+                  child: isGameStarting
+                      ? Container(
                           height: 80,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFB8A9FF),
+                            color: Colors.red[400],
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Center(
-                            child: Text(
-                              '연습',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Cancel',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  '$countdown',
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RankChatScreen(),
-                            ),
-                          );
-                        },
-                        child: Container(
+                        )
+                      : SizedBox(
                           height: 80,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFB8A9FF),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              '랭크',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                          child: Image.asset(
+                            'assets/image/play_button.png',
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
 
@@ -347,19 +352,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return const Color(0xFFCD7F32); // 기본 브론즈
     }
   }
-
-  IconData _getTopicIcon(int index) {
-    switch (index) {
-      case 0:
-        return Icons.chat_outlined;
-      case 1:
-        return Icons.sports_esports_outlined;
-      case 2:
-        return Icons.school_outlined;
-      default:
-        return Icons.chat_outlined;
-    }
-  }
 }
 
 class HexagonPainter extends CustomPainter {
@@ -396,4 +388,263 @@ class HexagonPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+class GameSettingsDialog extends StatefulWidget {
+  const GameSettingsDialog({super.key});
+
+  @override
+  State<GameSettingsDialog> createState() => _GameSettingsDialogState();
+}
+
+class _GameSettingsDialogState extends State<GameSettingsDialog> {
+  String selectedMode = 'practice'; // 'practice' or 'rank'
+  String selectedTopic = '자유';
+  int selectedPlayerCount = 2;
+
+  final List<String> topics = ['자유', '재미', '학습'];
+  final List<int> playerCounts = [2, 3, 4];
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 제목
+            const Center(
+              child: Text(
+                '게임 설정',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // 모드 선택
+            const Text(
+              '모드 선택',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(child: _buildModeButton('연습', 'practice')),
+                const SizedBox(width: 12),
+                Expanded(child: _buildModeButton('랭크', 'rank')),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // 주제 선택
+            const Text(
+              '주제 선택',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: topics.map((topic) {
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: _buildTopicButton(topic),
+                  ),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 20),
+
+            // 인원 수 선택
+            const Text(
+              '인원 수',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: playerCounts.map((count) {
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: _buildPlayerCountButton(count),
+                  ),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 32),
+
+            // 버튼들
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      backgroundColor: Colors.grey[200],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      '취소',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop({
+                        'mode': selectedMode,
+                        'topic': selectedTopic,
+                        'playerCount': selectedPlayerCount,
+                      });
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      backgroundColor: const Color(0xFFB8A9FF),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      '확인',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModeButton(String label, String mode) {
+    final isSelected = selectedMode == mode;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedMode = mode;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[300]!,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: isSelected ? Colors.white : Colors.black54,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopicButton(String topic) {
+    final isSelected = selectedTopic == topic;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedTopic = topic;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[300]!,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            topic,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: isSelected ? Colors.white : Colors.black54,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlayerCountButton(int count) {
+    final isSelected = selectedPlayerCount == count;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedPlayerCount = count;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[300]!,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            '$count명',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: isSelected ? Colors.white : Colors.black54,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
