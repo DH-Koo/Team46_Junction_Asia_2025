@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
+import '../chat/practice_chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -239,19 +241,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFB8A9FF),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            '연습',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PracticeChatScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFB8A9FF),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '연습',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
