@@ -23,7 +23,7 @@ class ChatWebSocketService {
     _onError = onError;
 
     try {
-      final uri = Uri.parse('wss://${ApiConfig.host}/ws/match/?user_id=$userId');
+      final uri = Uri.parse('ws://${ApiConfig.host}/ws/match/?user_id=$userId');
       print('uri: $uri');
       _channel = WebSocketChannel.connect(uri);
       
@@ -59,16 +59,25 @@ class ChatWebSocketService {
   // 메시지 처리
   void _handleMessage(dynamic message) {
     try {
+      // 모든 서버 응답을 출력
+      print('서버 응답: $message');
+      
       final data = jsonDecode(message);
       
       if (data['event'] == 'matched') {
         final chatRoomId = data['chat_room_id'] as int;
+        print('매칭 성공! 채팅방 ID: $chatRoomId');
         _onMatched?.call(chatRoomId);
         disconnect();
       } else if (data['event'] == 'error') {
+        print('서버 오류: ${data['message'] ?? '알 수 없는 오류가 발생했습니다.'}');
         _onError?.call(data['message'] ?? '알 수 없는 오류가 발생했습니다.');
+      } else {
+        // 기타 이벤트들도 출력
+        print('기타 이벤트: ${data['event']} - 데이터: $data');
       }
     } catch (e) {
+      print('메시지 파싱 오류: $e');
       _onError?.call('메시지 파싱 오류: $e');
     }
   }
