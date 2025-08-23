@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'screens/home/home_screen.dart';
-import 'screens/record/record_list_screen.dart';
-import 'screens/profile/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
