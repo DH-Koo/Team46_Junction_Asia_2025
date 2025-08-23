@@ -13,22 +13,15 @@ class ReportService {
   /// POST /api/ai/report/
   /// 채팅이 끝나고 나서 그 대화 내용을 바탕으로 리포트를 만들어 저장할 때 사용
   Future<Report> createReport({
-    required String chatRoomId,
-    List<Map<String, dynamic>>? messages,
-    Map<String, dynamic>? metadata,
-    String? token,
+    required String roomId,
+    required String userId,
   }) async {
     try {
-      final request = CreateReportRequest(
-        chatRoomId: chatRoomId,
-        messages: messages,
-        metadata: metadata,
-      );
+      final request = CreateReportRequest(roomId: roomId, userId: userId);
 
       final response = await _apiService.post(
         ApiConfig.report,
         body: request.toJson(),
-        token: token,
       );
 
       return Report.fromJson(response);
@@ -42,12 +35,10 @@ class ReportService {
   /// 특정 채팅방에 쌓인 메시지 리스트를 가져오는 API
   Future<List<ReportMessage>> getReportMessages({
     required String chatRoomId,
-    String? token,
   }) async {
     try {
       final response = await _apiService.get(
-        '${ApiConfig.report}messages/?chat_room_id=$chatRoomId',
-        token: token,
+        '${ApiConfig.report}messages/?room_id=$chatRoomId',
       );
 
       // API 응답이 배열 형태일 경우 results 키로 래핑되어 올 수 있음
@@ -65,14 +56,10 @@ class ReportService {
   /// 3. 리포트 메시지 상세 조회
   /// GET /api/ai/report/message/<message_id>/
   /// 특정 메시지 하나를 상세히 조회하는 API
-  Future<ReportMessage> getMessageDetail({
-    required String messageId,
-    String? token,
-  }) async {
+  Future<ReportMessage> getMessageDetail({required String messageId}) async {
     try {
       final response = await _apiService.get(
         '${ApiConfig.report}message/$messageId/',
-        token: token,
       );
 
       return ReportMessage.fromJson(response);
@@ -86,13 +73,15 @@ class ReportService {
   /// 채팅방 전체 대화를 기반으로 생성된 최종 리포트를 조회하는 API
   Future<ReportAnalysis> getReportAnalysis({
     required String chatRoomId,
-    String? token,
+    String? userId,
   }) async {
     try {
-      final response = await _apiService.get(
-        '${ApiConfig.report}report/?chat_room_id=$chatRoomId',
-        token: token,
-      );
+      String url = '${ApiConfig.report}report/?room_id=$chatRoomId';
+      if (userId != null) {
+        url += '&user_id=$userId';
+      }
+
+      final response = await _apiService.get(url);
 
       return ReportAnalysis.fromJson(response);
     } catch (e) {
@@ -104,13 +93,13 @@ class ReportService {
   /// 메시지 목록과 분석 결과를 함께 가져오는 헬퍼 메서드
   Future<Report> getFullReport({
     required String chatRoomId,
-    String? token,
+    String? userId,
   }) async {
     try {
       // 메시지 목록과 분석 결과를 병렬로 가져오기
       final futures = await Future.wait([
-        getReportMessages(chatRoomId: chatRoomId, token: token),
-        getReportAnalysis(chatRoomId: chatRoomId, token: token),
+        getReportMessages(chatRoomId: chatRoomId),
+        getReportAnalysis(chatRoomId: chatRoomId, userId: userId),
       ]);
 
       final messages = futures[0] as List<ReportMessage>;
@@ -133,14 +122,10 @@ class ReportService {
 
   /// 리포트 생성 상태 확인
   /// 리포트 생성이 완료되었는지 확인하는 폴링용 메서드
-  Future<String> checkReportStatus({
-    required String reportId,
-    String? token,
-  }) async {
+  Future<String> checkReportStatus({required String reportId}) async {
     try {
       final response = await _apiService.get(
         '${ApiConfig.report}$reportId/status/',
-        token: token,
       );
 
       return response['status'] ?? 'processing';
@@ -150,17 +135,14 @@ class ReportService {
   }
 
   /// 채팅방별 모든 리포트 목록 조회
-  Future<List<Report>> getAllReports({
-    String? chatRoomId,
-    String? token,
-  }) async {
+  Future<List<Report>> getAllReports({String? chatRoomId}) async {
     try {
       String endpoint = '${ApiConfig.report}list/';
       if (chatRoomId != null) {
         endpoint += '?chat_room_id=$chatRoomId';
       }
 
-      final response = await _apiService.get(endpoint, token: token);
+      final response = await _apiService.get(endpoint);
 
       final List<dynamic> reportsData =
           response['results'] ?? response['reports'] ?? [];

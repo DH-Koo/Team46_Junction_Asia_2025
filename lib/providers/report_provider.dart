@@ -36,10 +36,8 @@ class ReportProvider with ChangeNotifier {
   /// 1. 리포트 생성
   /// rank_chat_screen에서 대화가 끝난 후 호출
   Future<void> createReport({
-    required String chatRoomId,
-    List<Map<String, dynamic>>? messages,
-    Map<String, dynamic>? metadata,
-    String? token,
+    required String roomId,
+    required String userId,
   }) async {
     _isCreatingReport = true;
     _error = null;
@@ -47,10 +45,8 @@ class ReportProvider with ChangeNotifier {
 
     try {
       final report = await _reportService.createReport(
-        chatRoomId: chatRoomId,
-        messages: messages,
-        metadata: metadata,
-        token: token,
+        roomId: roomId,
+        userId: userId,
       );
 
       _currentReport = report;
@@ -62,7 +58,7 @@ class ReportProvider with ChangeNotifier {
       notifyListeners();
 
       // 리포트 생성 후 메시지 목록 자동 로드
-      await loadReportMessages(chatRoomId: chatRoomId, token: token);
+      await loadReportMessages(chatRoomId: roomId);
     } catch (e) {
       _error = e.toString();
       _isCreatingReport = false;
@@ -74,10 +70,7 @@ class ReportProvider with ChangeNotifier {
 
   /// 2. 리포트 메시지 목록 조회
   /// record_detail_chat_screen에서 호출
-  Future<void> loadReportMessages({
-    required String chatRoomId,
-    String? token,
-  }) async {
+  Future<void> loadReportMessages({required String chatRoomId}) async {
     _isLoadingMessages = true;
     _error = null;
     notifyListeners();
@@ -85,7 +78,6 @@ class ReportProvider with ChangeNotifier {
     try {
       final messages = await _reportService.getReportMessages(
         chatRoomId: chatRoomId,
-        token: token,
       );
 
       _messages = messages;
@@ -100,14 +92,10 @@ class ReportProvider with ChangeNotifier {
   }
 
   /// 3. 특정 메시지 상세 조회
-  Future<ReportMessage?> getMessageDetail({
-    required String messageId,
-    String? token,
-  }) async {
+  Future<ReportMessage?> getMessageDetail({required String messageId}) async {
     try {
       final message = await _reportService.getMessageDetail(
         messageId: messageId,
-        token: token,
       );
       return message;
     } catch (e) {
@@ -122,7 +110,7 @@ class ReportProvider with ChangeNotifier {
   /// record_detail_summary_screen에서 호출
   Future<void> loadReportAnalysis({
     required String chatRoomId,
-    String? token,
+    String? userId,
   }) async {
     _isLoadingAnalysis = true;
     _error = null;
@@ -131,7 +119,7 @@ class ReportProvider with ChangeNotifier {
     try {
       final analysis = await _reportService.getReportAnalysis(
         chatRoomId: chatRoomId,
-        token: token,
+        userId: userId,
       );
 
       _analysis = analysis;
@@ -162,7 +150,7 @@ class ReportProvider with ChangeNotifier {
   /// 전체 리포트 조회 (메시지 + 분석 결과)
   Future<void> loadFullReport({
     required String chatRoomId,
-    String? token,
+    String? userId,
   }) async {
     _isLoading = true;
     _error = null;
@@ -171,7 +159,7 @@ class ReportProvider with ChangeNotifier {
     try {
       final report = await _reportService.getFullReport(
         chatRoomId: chatRoomId,
-        token: token,
+        userId: userId,
       );
 
       _currentReport = report;
@@ -189,7 +177,7 @@ class ReportProvider with ChangeNotifier {
   }
 
   /// 모든 리포트 목록 조회
-  Future<void> loadAllReports({String? chatRoomId, String? token}) async {
+  Future<void> loadAllReports({String? chatRoomId}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -197,7 +185,6 @@ class ReportProvider with ChangeNotifier {
     try {
       final reports = await _reportService.getAllReports(
         chatRoomId: chatRoomId,
-        token: token,
       );
 
       _reports = reports;
@@ -212,15 +199,9 @@ class ReportProvider with ChangeNotifier {
   }
 
   /// 리포트 생성 상태 확인 (폴링)
-  Future<void> checkReportStatus({
-    required String reportId,
-    String? token,
-  }) async {
+  Future<void> checkReportStatus({required String reportId}) async {
     try {
-      final status = await _reportService.checkReportStatus(
-        reportId: reportId,
-        token: token,
-      );
+      final status = await _reportService.checkReportStatus(reportId: reportId);
 
       // 현재 리포트 상태 업데이트
       if (_currentReport != null && _currentReport!.id == reportId) {

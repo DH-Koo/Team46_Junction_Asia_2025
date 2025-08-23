@@ -140,17 +140,12 @@ class Report {
 
 // 리포트 생성 요청 모델
 class CreateReportRequest {
-  final String chatRoomId;
-  final List<Map<String, dynamic>>? messages;
-  final Map<String, dynamic>? metadata;
+  final String roomId;
+  final String userId;
 
-  CreateReportRequest({required this.chatRoomId, this.messages, this.metadata});
+  CreateReportRequest({required this.roomId, required this.userId});
 
   Map<String, dynamic> toJson() {
-    return {
-      'chat_room_id': chatRoomId,
-      if (messages != null) 'messages': messages,
-      if (metadata != null) 'metadata': metadata,
-    };
+    return {'room_id': roomId, 'user_id': userId};
   }
 }
