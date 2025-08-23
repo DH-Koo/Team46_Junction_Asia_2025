@@ -1,7 +1,8 @@
 class ApiConfig {
   // 기본 API URL 설정
-  static const String baseUrl = ''; // HTTP로 변경
+  static const String baseUrl = 'http://172.30.1.53:8000/api'; // HTTP로 변경
   static const String serverUrl = ''; // 서버 기본 URL
+  static const String host = '172.30.1.53:8000'; // 웹소켓용 호스트
 
   // API 엔드포인트들
 
