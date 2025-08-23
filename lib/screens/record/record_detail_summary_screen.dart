@@ -59,7 +59,7 @@ class _RecordDetailSummaryScreenState extends State<RecordDetailSummaryScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
+                  //color: const Color(0xFFF5F5F5),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: const Color(0xFFE0E0E0)),
                 ),
