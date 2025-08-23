@@ -33,174 +33,176 @@ class ProfileScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // 프로필 이미지
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(23),
-                    child: Image.asset(
-                      'assets/image/ybm_2d-1.png',
-                      fit: BoxFit.cover,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // 프로필 이미지
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(23),
+                      child: Image.asset(
+                        'assets/image/ybm_2d-1.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '베이비쿼카',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                  const SizedBox(width: 4),
+                  Text(
+                    '베이비쿼카',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Icon(Icons.edit, color: Colors.grey[500], size: 24),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // 총 배틀 시간 박스
-                Container(
-                  width: 120,
-                  height: 120,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.timer,
-                        color: Color(0xFFB8A9FF),
-                        size: 28,
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        '총 배틀 시간',
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        '2시간 37분',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                // 완벽 문장 개수 박스
-                Container(
-                  width: 120,
-                  height: 120,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.check_circle,
-                        color: Color(0xFFB8A9FF),
-                        size: 28,
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        '완벽한 문장',
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        '128개',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Divider(color: Colors.grey[300], height: 1),
-            const SizedBox(height: 24),
-
-            Text(
-              '소셜',
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+                  const SizedBox(width: 8),
+                  Icon(Icons.edit, color: Colors.grey[500], size: 24),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
-            // 친구 목록
-            Column(
-              children: friends.map((friend) {
-                final index = friends.indexOf(friend);
-                return _buildFriendItem(friend, index + 1);
-              }).toList(),
-            ),
-
-            const SizedBox(height: 24),
-
-            // 친구 초대 버튼
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: const Color(0xFFB8A9FF),
-                borderRadius: BorderRadius.circular(12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // 총 배틀 시간 박스
+                  Container(
+                    width: 120,
+                    height: 120,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[200]!),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.timer,
+                          color: Color(0xFFB8A9FF),
+                          size: 28,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          '총 배틀 시간',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          '2시간 37분',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // 완벽 문장 개수 박스
+                  Container(
+                    width: 120,
+                    height: 120,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey[200]!),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.check_circle,
+                          color: Color(0xFFB8A9FF),
+                          size: 28,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          '완벽한 문장',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          '128개',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              child: const Text(
-                '친구 초대',
-                textAlign: TextAlign.center,
+              const SizedBox(height: 24),
+              Divider(color: Colors.grey[300], height: 1),
+              const SizedBox(height: 24),
+
+              Text(
+                '소셜',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black87,
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+
+              // 친구 목록
+              Column(
+                children: friends.map((friend) {
+                  final index = friends.indexOf(friend);
+                  return _buildFriendItem(friend, index + 1);
+                }).toList(),
+              ),
+
+              const SizedBox(height: 24),
+
+              // 친구 초대 버튼
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFB8A9FF),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  '친구 초대',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -85,7 +85,7 @@ class _RecordScreenState extends State<RecordScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
-        title: const Text('전적 기록'),
+        title: const Text('리포트'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
         surfaceTintColor: Colors.white,
@@ -100,11 +100,11 @@ class _RecordScreenState extends State<RecordScreen> {
               _buildStatisticsSection(),
               const SizedBox(height: 24),
 
-              // 전적 기록 제목
+              // 학습 기록 제목
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '전적 기록',
+                  '학습 기록',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -389,34 +389,38 @@ class _RecordScreenState extends State<RecordScreen> {
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
-                  children: (record['participants'] as List<String>).asMap().entries.map((
-                    entry,
-                  ) {
-                    final index = entry.key;
-                    final participant = entry.value;
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildTierHexagon(index + 1),
-                          const SizedBox(width: 4),
-                          Text(
-                            participant,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.black87,
-                            ),
+                  children: (record['participants'] as List<String>)
+                      .asMap()
+                      .entries
+                      .map((entry) {
+                        final index = entry.key;
+                        final participant = entry.value;
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _buildTierHexagon(index + 1),
+                              const SizedBox(width: 4),
+                              Text(
+                                participant,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      })
+                      .toList(),
                 ),
-                const SizedBox(height: 12),
+
+                // const SizedBox(height: 12),
+                Divider(color: Colors.grey[200], thickness: 1),
 
                 // 통계 정보 - 새로운 레이아웃
                 Row(

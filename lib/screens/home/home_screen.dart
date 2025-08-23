@@ -333,25 +333,25 @@ class _GameSettingsDialogState extends State<GameSettingsDialog> {
             ),
             const SizedBox(height: 24),
 
-            // 모드 선택
-            const Text(
-              '모드 선택',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(child: _buildModeButton('연습', 'practice')),
-                const SizedBox(width: 12),
-                Expanded(child: _buildModeButton('랭크', 'rank')),
-              ],
-            ),
+            // // 모드 선택
+            // const Text(
+            //   '모드 선택',
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     fontWeight: FontWeight.w600,
+            //     color: Colors.black87,
+            //   ),
+            // ),
+            // const SizedBox(height: 8),
+            // Row(
+            //   children: [
+            //     Expanded(child: _buildModeButton('연습', 'practice')),
+            //     const SizedBox(width: 12),
+            //     Expanded(child: _buildModeButton('랭크', 'rank')),
+            //   ],
+            // ),
 
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
 
             // 주제 선택
             const Text(
@@ -454,37 +454,6 @@ class _GameSettingsDialogState extends State<GameSettingsDialog> {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildModeButton(String label, String mode) {
-    final isSelected = selectedMode == mode;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedMode = mode;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? const Color(0xFFB8A9FF) : Colors.grey[300]!,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: isSelected ? Colors.white : Colors.black54,
-            ),
-          ),
         ),
       ),
     );

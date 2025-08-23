@@ -231,18 +231,13 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
             Container(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  message.senderName ?? "구구",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w600,
-                  ),
+              decoration: BoxDecoration(shape: BoxShape.circle),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/image/ybm_2d-1.png',
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
