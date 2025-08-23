@@ -14,7 +14,7 @@ class _RecordScreenState extends State<RecordScreen> {
   // 더미 데이터
   final List<Map<String, dynamic>> gameRecords = [
     {
-      'topic': '자유 주제',
+      'topic': '선의의 거짓말 vs 진실을 말하기',
       'participants': ['베이비쿼카', '플레이어2', '플레이어3'],
       'scoreChange': 60,
       'currentScore': 400, // 게임 후 점수
@@ -29,7 +29,7 @@ class _RecordScreenState extends State<RecordScreen> {
       'duration': '8분',
     },
     {
-      'topic': '여행 계획',
+      'topic': '내가 사는 도시의 역사를 알아야 할까?',
       'participants': ['베이비쿼카', '플레이어4'],
       'scoreChange': -20,
       'currentScore': 340, // 게임 후 점수
@@ -44,7 +44,7 @@ class _RecordScreenState extends State<RecordScreen> {
       'duration': '10분',
     },
     {
-      'topic': '음식 리뷰',
+      'topic': '다른 문화를 아는 것은 중요한가?',
       'participants': ['베이비쿼카', '플레이어5', '플레이어6', '플레이어7'],
       'scoreChange': 80,
       'currentScore': 360, // 게임 후 점수
@@ -59,7 +59,7 @@ class _RecordScreenState extends State<RecordScreen> {
       'duration': '12분',
     },
     {
-      'topic': '영화 토론',
+      'topic': '인공지능이 세상을 지배할까?',
       'participants': ['베이비쿼카', '플레이어8', '플레이어9'],
       'scoreChange': 60,
       'currentScore': 280, // 게임 후 점수
@@ -388,24 +388,30 @@ class _RecordScreenState extends State<RecordScreen> {
                 // 참여자들
                 Wrap(
                   spacing: 6,
-                  children: (record['participants'] as List<String>).map((
-                    participant,
+                  runSpacing: 4,
+                  children: (record['participants'] as List<String>).asMap().entries.map((
+                    entry,
                   ) {
+                    final index = entry.key;
+                    final participant = entry.value;
                     return Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 4,
                       ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE8E4FF),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        participant,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.black87,
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildTierHexagon(index + 1),
+                          const SizedBox(width: 4),
+                          Text(
+                            participant,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }).toList(),
