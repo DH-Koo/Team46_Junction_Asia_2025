@@ -14,8 +14,8 @@ class _RecordScreenState extends State<RecordScreen> {
   // 더미 데이터
   final List<Map<String, dynamic>> gameRecords = [
     {
-      'topic': '선의의 거짓말 vs 진실을 말하기',
-      'participants': ['베이비쿼카', '플레이어2', '플레이어3'],
+      'topic': 'Is it right to tell a white lie?',
+      'participants': ['IBM', 'Student1'],
       'scoreChange': 60,
       'currentScore': 400, // 게임 후 점수
       'previousScore': 340, // 게임 전 점수
@@ -29,38 +29,8 @@ class _RecordScreenState extends State<RecordScreen> {
       'duration': '8분',
     },
     {
-      'topic': '내가 사는 도시의 역사를 알아야 할까?',
-      'participants': ['베이비쿼카', '플레이어4'],
-      'scoreChange': -20,
-      'currentScore': 340, // 게임 후 점수
-      'previousScore': 360, // 게임 전 점수
-      'tier': 1,
-      'sentenceCount': 15,
-      'bombCount': 4,
-      'conversationAccuracy': 72.3,
-      'grammarErrors': 3,
-      'vocabularyErrors': 1,
-      'date': '2024.01.14',
-      'duration': '10분',
-    },
-    {
-      'topic': '다른 문화를 아는 것은 중요한가?',
-      'participants': ['베이비쿼카', '플레이어5', '플레이어6', '플레이어7'],
-      'scoreChange': 80,
-      'currentScore': 360, // 게임 후 점수
-      'previousScore': 280, // 게임 전 점수
-      'tier': 1,
-      'sentenceCount': 18,
-      'bombCount': 1,
-      'conversationAccuracy': 92.1,
-      'grammarErrors': 0,
-      'vocabularyErrors': 1,
-      'date': '2024.01.13',
-      'duration': '12분',
-    },
-    {
-      'topic': '인공지능이 세상을 지배할까?',
-      'participants': ['베이비쿼카', '플레이어8', '플레이어9'],
+      'topic': 'Will ai dominate the world?',
+      'participants': ['IBM', 'Student1'],
       'scoreChange': 60,
       'currentScore': 280, // 게임 후 점수
       'previousScore': 220, // 게임 전 점수

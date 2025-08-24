@@ -11,26 +11,32 @@ class RecordDetailChatScreen extends StatefulWidget {
 class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
   final List<ChatMessage> _messages = [
     ChatMessage(
-      text: "Are you ready to order?",
-      isFromUser: false,
-      senderName: "구구",
-    ),
-    ChatMessage(
-      text: "Yes. Can I have a cheeseburger and fries, please?",
+      text: "I think white lies are sometimes okay.",
       isFromUser: true,
     ),
     ChatMessage(
-      text: "Sure. Would you like a drink?",
+      text: "Why do you think so?",
       isFromUser: false,
-      senderName: "구구",
+      senderName: "Studnet1",
     ),
-    ChatMessage(text: "I like watching baseball.", isFromUser: true),
-    ChatMessage(text: "Oh, then would you want some coke?", isFromUser: false),
-
-    ChatMessage(text: "Yes, I'd like a coke.", isFromUser: true),
-    ChatMessage(text: "I'd like a coke.", isFromUser: false),
-
-    ChatMessage(text: "I'd like a coke.", isFromUser: true),
+    ChatMessage(
+      text: "Because they can protect someone's feelings.",
+      isFromUser: true,
+    ),
+    ChatMessage(
+      text: "But isn’t honesty always better?",
+      isFromUser: false,
+      senderName: "Studnet1",
+    ),
+    ChatMessage(
+      text: "Honesty is important, but kindness is also important.",
+      isFromUser: true,
+    ),
+    ChatMessage(
+      text: "What about in serious situations?",
+      isFromUser: false,
+      senderName: "Studnet1",
+    ),
   ];
 
   // 현재 단계 (사용자 대화 인덱스)
@@ -38,6 +44,34 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
 
   // 사용자 대화의 인덱스들을 저장
   late List<int> _userMessageIndices;
+
+  // 피드백 데이터 리스트
+  final List<Map<String, dynamic>> _feedbackData = [
+    {
+      "context_appropriateness": 5,
+      "context_appropriateness_reason": "주제와 직접적으로 관련된 발언이며 자연스러운 의견 제시임.",
+      "grammer_appropriateness": 5,
+      "grammer_appropriateness_reason": "문법적으로 완벽한 문장임.",
+      "vocabulary_appropriateness": 4,
+      "vocabulary_appropriateness_reason": "어휘 사용은 적절하나 'sometimes acceptable'이 더 자연스러울 수 있음."
+    },
+    {
+      "context_appropriateness": 5,
+      "context_appropriateness_reason": "이전 질문에 적절한 이유를 설명하고 있음.",
+      "grammer_appropriateness": 5,
+      "grammer_appropriateness_reason": "문법 오류가 없음.",
+      "vocabulary_appropriateness": 5,
+      "vocabulary_appropriateness_reason": "단어 선택이 정확하고 자연스러움."
+    },
+    {
+      "context_appropriateness": 5,
+      "context_appropriateness_reason": "논의에 적절하고 맥락상 자연스러운 주장임.",
+      "grammer_appropriateness": 4,
+      "grammer_appropriateness_reason": "반복 표현으로 다소 어색하나 의미 전달에는 문제없음.",
+      "vocabulary_appropriateness": 4,
+      "vocabulary_appropriateness_reason": "'kindness' 대신 'compassion' 같은 단어를 쓰면 더 다양하게 표현 가능."
+    },
+  ];
 
   // 스크롤 컨트롤러 추가
   final ScrollController _scrollController = ScrollController();
@@ -163,7 +197,7 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
                   //   ),
                   //   const SizedBox(height: 2),
                   Text(
-                    "Ordering food at a restaurant",
+                    "Is it right to tell a white lie?",
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -335,23 +369,54 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Row(
+                  //   children: [
+                  //     Text(
+                  //       "Bad",
+                  //       style: TextStyle(
+                  //         fontSize: 18,
+                  //         fontWeight: FontWeight.bold,
+                  //         color: Colors.red[600],
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 8),
+                  //     const Text("😢", style: TextStyle(fontSize: 18)),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 8),
+                  // 점수 표시
                   Row(
                     children: [
                       Text(
-                        "Bad",
+                        "문맥 ${_feedbackData[_currentStep]["context_appropriateness"]} ",
                         style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red[600],
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.blue[600],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      const Text("😢", style: TextStyle(fontSize: 18)),
+                      Text(
+                        "어휘 ${_feedbackData[_currentStep]["vocabulary_appropriateness"]} ",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.orange[600],
+                        ),
+                      ),
+                      Text(
+                        "문법 ${_feedbackData[_currentStep]["grammer_appropriateness"]}",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.green[600],
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
+                  // 피드백 텍스트
                   Text(
-                    "문맥에 맞지 않는 말이에요.\n이 경우엔 'Yes, i'll have a coke'\n와 같이 답변할 수 있어요.",
+                    "문맥: ${_feedbackData[_currentStep]["context_appropriateness_reason"]}\n\n어휘: ${_feedbackData[_currentStep]["vocabulary_appropriateness_reason"]}\n\n문법: ${_feedbackData[_currentStep]["grammer_appropriateness_reason"]}",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey[700],

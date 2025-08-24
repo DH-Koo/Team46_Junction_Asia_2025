@@ -55,7 +55,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
 
   // 타이머 관련 변수들
   Timer? _timer;
-  int _remainingSeconds = 10; // 3분 = 180초
+  int _remainingSeconds = 180; // 3분 = 180초
 
   // 게임 종료 관련 변수들
   bool _isGameFinished = false;
@@ -330,7 +330,7 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
       if (mounted) {
         setState(() {
           if (_bombProgress > 0.0) {
-            _bombProgress -= 0.005; // 1.5초 동안 0%까지 줄어들도록
+            _bombProgress -= 0.002; // 1.5초 동안 0%까지 줄어들도록
           } else {
             _bombProgress = 0.0;
             _isBombActive = false;
@@ -386,8 +386,30 @@ class _RankChatScreenBetaState extends State<RankChatScreenBeta>
     _messageControllers.clear();
     _messageAnimations.clear();
 
+    // 빠른 타이머 시작 (0.1초마다 1초씩 감소)
+    _startFastTimer();
+
     // 카운트다운 다시 시작
     _startCountdown();
+  }
+
+  // 빠른 타이머 (재시작 시 사용)
+  void _startFastTimer() {
+    _timer = Timer.periodic(const Duration(milliseconds: 40), (timer) {
+      if (mounted) {
+        setState(() {
+          if (_remainingSeconds > 0) {
+            _remainingSeconds--;
+            // 현재 남은 시간을 저장 (게임 재시작 시 사용)
+            _savedRemainingSeconds = _remainingSeconds;
+          } else {
+            timer.cancel();
+            // 시간 종료 처리
+            _onGameFinished();
+          }
+        });
+      }
+    });
   }
 
   void _startTimer() {

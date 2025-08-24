@@ -9,18 +9,12 @@ class RankChatScreen extends StatefulWidget {
   State<RankChatScreen> createState() => _RankChatScreenState();
 }
 
-class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStateMixin {
+class _RankChatScreenState extends State<RankChatScreen>
+    with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
   final List<ChatMessage> _messages = [
-    ChatMessage(
-      text: "Can you help me?",
-      isFromUser: false,
-      senderName: "구구",
-    ),
-    ChatMessage(
-      text: "How can I help you?",
-      isFromUser: true,
-    ),
+    ChatMessage(text: "Can you help me?", isFromUser: false, senderName: "구구"),
+    ChatMessage(text: "How can I help you?", isFromUser: true),
     ChatMessage(
       text: "What is the most popular food in the restaruant?",
       isFromUser: false,
@@ -31,22 +25,18 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
       isFromUser: false,
       senderName: "구구",
     ),
-    ChatMessage(
-      text: "I like watching baseball.",
-      isFromUser: true,
-    ),
+    ChatMessage(text: "I like watching baseball.", isFromUser: true),
   ];
 
   // 카운트다운 관련 변수들
   bool _isCountdownActive = true;
   bool _isGameStarted = false;
-  int _countdownNumber = 3;
   String _countdownText = "3";
-  
+
   // 타이머 관련 변수들
   Timer? _timer;
   int _remainingSeconds = 180; // 3분 = 180초
-  
+
   // 애니메이션 컨트롤러
   late AnimationController _countdownController;
   late Animation<double> _countdownAnimation;
@@ -55,29 +45,21 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    
+
     // 애니메이션 컨트롤러 초기화
     _countdownController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    
-    _countdownAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _countdownController,
-      curve: Curves.elasticOut,
-    ));
-    
-    _fadeAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _countdownController,
-      curve: Curves.easeInOut,
-    ));
-    
+
+    _countdownAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _countdownController, curve: Curves.elasticOut),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(parent: _countdownController, curve: Curves.easeInOut),
+    );
+
     // 카운트다운 시작
     _startCountdown();
   }
@@ -86,32 +68,31 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
     // 3초 카운트다운
     for (int i = 3; i >= 1; i--) {
       setState(() {
-        _countdownNumber = i;
         _countdownText = i.toString();
       });
-      
+
       _countdownController.reset();
       _countdownController.forward();
-      
+
       await Future.delayed(const Duration(seconds: 1));
     }
-    
+
     // START! 표시
     setState(() {
       _countdownText = "START!";
     });
-    
+
     _countdownController.reset();
     _countdownController.forward();
-    
+
     await Future.delayed(const Duration(seconds: 1));
-    
+
     // 카운트다운 완료, 게임 시작
     setState(() {
       _isCountdownActive = false;
       _isGameStarted = true;
     });
-    
+
     // 타이머 시작
     _startTimer();
   }
@@ -147,21 +128,19 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
               children: [
                 // 상단 헤더
                 _buildHeader(),
-                
+
                 // 캐릭터 이미지들
                 _buildCharacterRow(),
-                
+
                 // 채팅 메시지 영역
-                Expanded(
-                  child: _buildChatMessages(),
-                ),
-                
+                Expanded(child: _buildChatMessages()),
+
                 // 추천 응답 및 입력 영역
                 _buildBottomSection(),
               ],
             ),
           ),
-          
+
           // 카운트다운 오버레이
           if (_isCountdownActive)
             Container(
@@ -199,12 +178,12 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.grey.withOpacity(0.1),
-        //     spreadRadius: 1,
-        //     blurRadius: 3,
-        //     offset: const Offset(0, 1),
-        //   ),
+          //   BoxShadow(
+          //     color: Colors.grey.withOpacity(0.1),
+          //     spreadRadius: 1,
+          //     blurRadius: 3,
+          //     offset: const Offset(0, 1),
+          //   ),
         ],
       ),
       child: Row(
@@ -212,23 +191,26 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
           // 레스토랑 컨텍스트
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-            //   decoration: BoxDecoration(
-            //     color: Colors.grey[100],
-            //     borderRadius: BorderRadius.circular(20),
-            //   ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
+              //   decoration: BoxDecoration(
+              //     color: Colors.grey[100],
+              //     borderRadius: BorderRadius.circular(20),
+              //   ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                //   Text(
-                //     "Restaurant",
-                //     style: TextStyle(
-                //       fontSize: 12,
-                //       color: Colors.grey[600],
-                //       fontWeight: FontWeight.w500,
-                //     ),
-                //   ),
-                //   const SizedBox(height: 2),
+                  //   Text(
+                  //     "Restaurant",
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.grey[600],
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   const SizedBox(height: 2),
                   Text(
                     "Ordering food at a restaurant.",
                     style: TextStyle(
@@ -241,9 +223,9 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
               ),
             ),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // 시간
           Column(
             children: [
@@ -279,16 +261,10 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
           // 폭탄 아이콘과 진행바
           Row(
             children: [
-                const Icon(
-                  Symbols.bomb,
-                  color: Colors.black,
-                  size: 30,
-                  fill: 1,
-                ),
-              
-              
+              const Icon(Symbols.bomb, color: Colors.black, size: 30, fill: 1),
+
               const SizedBox(width: 8),
-              
+
               // 진행바
               Expanded(
                 child: Container(
@@ -311,9 +287,9 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 캐릭터 카드들
           Row(
             children: [
@@ -327,9 +303,9 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
                   borderWidth: 1,
                 ),
               ),
-              
+
               const SizedBox(width: 12),
-              
+
               Expanded(
                 child: CharacterCard(
                   rank: 2,
@@ -340,9 +316,9 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
                   borderWidth: 2,
                 ),
               ),
-              
+
               const SizedBox(width: 12),
-              
+
               Expanded(
                 child: CharacterCard(
                   rank: 1,
@@ -384,17 +360,17 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
                 decoration: BoxDecoration(
                   color: Color(0xFFE8E4FF),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   message.text,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.black87,
-                  ),
+                  style: const TextStyle(fontSize: 13, color: Colors.black87),
                 ),
               ),
             ),
@@ -427,7 +403,7 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
                 ),
               ),
             ),
-            
+
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -446,7 +422,10 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
                     maxWidth: MediaQuery.of(context).size.width * 0.7,
                   ),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 12.0,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(20),
@@ -497,29 +476,20 @@ class _RankChatScreenState extends State<RankChatScreen> with TickerProviderStat
                 decoration: const InputDecoration(
                   hintText: "Type a message",
                   border: InputBorder.none,
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                  ),
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
                 ),
               ),
             ),
           ),
-          
+
           const SizedBox(width: 12),
-          
+
           // 전송 버튼
-          const Icon(
-            Icons.send,
-            color: Colors.black,
-            size: 30,
-          ),
+          const Icon(Icons.send, color: Colors.black, size: 30),
         ],
       ),
     );
   }
-
-
 
   @override
   void dispose() {
@@ -535,11 +505,7 @@ class ChatMessage {
   final bool isFromUser;
   final String? senderName;
 
-  ChatMessage({
-    required this.text,
-    required this.isFromUser,
-    this.senderName,
-  });
+  ChatMessage({required this.text, required this.isFromUser, this.senderName});
 }
 
 class CharacterCard extends StatelessWidget {
@@ -571,28 +537,28 @@ class CharacterCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-        //   // 메달
-        //   Container(
-        //     width: 32,
-        //     height: 32,
-        //     decoration: BoxDecoration(
-        //       color: medalColor,
-        //       shape: BoxShape.circle,
-        //     ),
-        //     child: Center(
-        //       child: Text(
-        //         rank.toString(),
-        //         style: TextStyle(
-        //           color: rank == 1 ? Colors.black : Colors.white,
-        //           fontSize: 16,
-        //           fontWeight: FontWeight.bold,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-          
-        //   const SizedBox(height: 8),
-          
+          //   // 메달
+          //   Container(
+          //     width: 32,
+          //     height: 32,
+          //     decoration: BoxDecoration(
+          //       color: medalColor,
+          //       shape: BoxShape.circle,
+          //     ),
+          //     child: Center(
+          //       child: Text(
+          //         rank.toString(),
+          //         style: TextStyle(
+          //           color: rank == 1 ? Colors.black : Colors.white,
+          //           fontSize: 16,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+
+          //   const SizedBox(height: 8),
+
           // 캐릭터 이미지
           SizedBox(
             width: 60,
@@ -602,9 +568,9 @@ class CharacterCard extends StatelessWidget {
               fit: BoxFit.contain,
             ),
           ),
-          
+
           const SizedBox(height: 8),
-          
+
           // 이름
           Text(
             name,
@@ -614,7 +580,7 @@ class CharacterCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          
+
           //const SizedBox(height: 4),
           // 점수
           Text(

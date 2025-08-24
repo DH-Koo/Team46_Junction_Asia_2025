@@ -4,7 +4,6 @@ import 'package:team46_junction_asia_2025/screens/home/matching_screen.dart';
 import '../record/record_list_screen.dart';
 import '../profile/profile_screen.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
-import '../../providers/report_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,35 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _navigateToGame(settings);
   }
 
-  // 임시 리포트 생성 테스트 함수
-  Future<void> _testCreateReport() async {
-    final reportProvider = ReportProvider();
-
-    try {
-      print('리포트 생성 테스트 시작...');
-
-      // 테스트용 더미 데이터
-      await reportProvider.createReport(roomId: '1', userId: '2');
-
-      print('리포트 생성 성공!');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('리포트 생성 테스트 성공!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      print('리포트 생성 실패: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('리포트 생성 실패: $e'), backgroundColor: Colors.red),
-        );
-      }
-    }
-  }
-
   void _navigateToGame(Map<String, dynamic> settings) {
     // 매칭 화면으로 이동
     Navigator.push(
@@ -85,18 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // 임시 테스트 버튼
-              Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: ElevatedButton(
-                  onPressed: _testCreateReport,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('리포트 생성 테스트'),
-                ),
-              ),
               // 상단 헤더
               SizedBox(height: 20),
               Row(
@@ -115,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           const Text(
-                            '베이비쿼카',
+                            'IBM',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

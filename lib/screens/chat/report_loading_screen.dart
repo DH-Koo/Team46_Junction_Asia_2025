@@ -1,9 +1,34 @@
 import 'package:flutter/material.dart';
+import '../record/record_detail_chat_screen.dart';
 
-class ReportLoadingScreen extends StatelessWidget {
-  const ReportLoadingScreen({super.key, required this.roomId, required this.userId});
+class ReportLoadingScreen extends StatefulWidget {
+  const ReportLoadingScreen({
+    super.key,
+    required this.roomId,
+    required this.userId,
+  });
   final int roomId;
   final int userId;
+
+  @override
+  State<ReportLoadingScreen> createState() => _ReportLoadingScreenState();
+}
+
+class _ReportLoadingScreenState extends State<ReportLoadingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // 4초 후에 record_detail_chat_screen으로 이동
+    Future.delayed(const Duration(seconds: 4), () {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => RecordDetailChatScreen(),
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
