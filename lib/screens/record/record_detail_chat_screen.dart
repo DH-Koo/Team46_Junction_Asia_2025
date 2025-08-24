@@ -47,14 +47,15 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
 
   // 피드백 데이터 리스트
   final List<Map<String, dynamic>> _feedbackData = [
-    {
-      "context_appropriateness": 5,
-      "context_appropriateness_reason": "주제와 직접적으로 관련된 발언이며 자연스러운 의견 제시임.",
-      "grammer_appropriateness": 5,
-      "grammer_appropriateness_reason": "문법적으로 완벽한 문장임.",
-      "vocabulary_appropriateness": 4,
-      "vocabulary_appropriateness_reason": "어휘 사용은 적절하나 'sometimes acceptable'이 더 자연스러울 수 있음."
-    },
+{
+  "context_appropriateness": 5,
+  "context_appropriateness_reason": "주제와 직접적으로 관련된 발언이며 자연스러운 의견 제시임.",
+  "grammer_appropriateness": 5,
+  "grammer_appropriateness_reason": "문법적으로 완벽한 문장이며, 이전에 자주 실수했던 단수/복수 일치 문제를 잘 극복했음.",
+  "vocabulary_appropriateness": 4,
+  "vocabulary_appropriateness_reason": "어휘 사용은 적절하나 'sometimes acceptable'이 더 자연스러울 수 있음. 이 부분은 사용자 님이 과거에도 여러 번 헷갈려 했던 표현이에요."
+},
+
     {
       "context_appropriateness": 5,
       "context_appropriateness_reason": "이전 질문에 적절한 이유를 설명하고 있음.",
@@ -63,14 +64,15 @@ class _RecordDetailChatScreenState extends State<RecordDetailChatScreen> {
       "vocabulary_appropriateness": 5,
       "vocabulary_appropriateness_reason": "단어 선택이 정확하고 자연스러움."
     },
-    {
-      "context_appropriateness": 5,
-      "context_appropriateness_reason": "논의에 적절하고 맥락상 자연스러운 주장임.",
-      "grammer_appropriateness": 4,
-      "grammer_appropriateness_reason": "반복 표현으로 다소 어색하나 의미 전달에는 문제없음.",
-      "vocabulary_appropriateness": 4,
-      "vocabulary_appropriateness_reason": "'kindness' 대신 'compassion' 같은 단어를 쓰면 더 다양하게 표현 가능."
-    },
+{
+  "context_appropriateness": 5,
+  "context_appropriateness_reason": "논의에 적절하고 맥락상 자연스러운 주장임.",
+  "grammer_appropriateness": 4,
+  "grammer_appropriateness_reason": "반복 표현으로 다소 어색하나 의미 전달에는 문제없음. 예전에 사용자가 'is ~ but is also' 같은 구조에서 자주 반복 오류를 보였던 부분이에요.",
+  "vocabulary_appropriateness": 4,
+  "vocabulary_appropriateness_reason": "'kindness' 대신 'compassion' 같은 단어를 쓰면 더 다양하게 표현 가능. 이 부분도 사용자 님이 과거에 어휘 다양성에서 종종 지적받았던 부분이에요."
+}
+
   ];
 
   // 스크롤 컨트롤러 추가
